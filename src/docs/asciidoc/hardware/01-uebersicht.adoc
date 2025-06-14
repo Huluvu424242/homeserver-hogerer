@@ -1,6 +1,0 @@
-==  Hardwareübersicht
-
-=== Raspberry Pi 4 Modell B
-
-* xref:hardware/raspi4b/raspi4-aufbau.adoc[Aufbau]
-* xref:hardware/raspi4b/01-montageanleitung.adoc[Montageanleitung]

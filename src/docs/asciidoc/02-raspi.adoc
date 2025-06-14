@@ -1,0 +1,14 @@
+== Variante 1 mit Raspi
+
+Die Idee war einfach. Nachdem ich einige Versuche mit resilio Sync unternommen hatte ein paar Verzeichnisse zwischen meinen Laptops, Handies und Tablets zu synchronisieren, wollte ich einen "Master" Server haben gegen den alle Geräte synchronisiert werden.
+
+Der Server brauchte nicht viel Leistung, denn die Synchronisation konnte ja wie bisher direkt zwischen den Geräten erfolgen und er selbst konnte gern langsam alle Änderungen nachziehen. Wichtig war nur wo der korrekte und vollständige Datenbestand zum Schluss liegen sollte - nämlich beim "Master"-Server. Für resiliosync hatte ich eine einfache Lizenz gekauft und zu der Technologie hatte ich Vertrauen,da das bittorrent Protokoll genutzt wurde und es entweder eine Art Nachfolger war oder die Leute welche die Software bereistellten auch schon bittorrent erdacht hatten.
+
+Da keine große Leistung nötig war, suchte ich kurz ob es mit einem Raspi geht und ja es gab schon Lösungen also frisch ans Werk. Raspi aufgesetzt, resilio instaliert und USB Platte dran und fertig. Die Kombi lief über Jahre stabil und ich war zufrieden. Eigentlich hätte ich nix ändern müssen aber mir war nicht klar wie sicher bzw. Auffwändig meine Backupstrategie war. Immer wenn ich dachte, zog ich von der raspi Platte ein Backup und legte es auf einer anderen externen USB Platte ab. Das war auf jeden Fall nicht die sicherste Art. Letztlich war das Backup der Punkt weshalb ich immer am überlegen war, wie ich das sicherer gestalten kann.
+
+Nur zum Verständnis hier noch einen kurzen Einschub was ich speicherte und wo und dann wie konkret ich meine Backups durchführte.
+
+
+
+
+* xref:index.adoc[Zurück zur Übersicht]

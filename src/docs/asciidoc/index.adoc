@@ -9,24 +9,25 @@ v1.0, {docdate}
 :toc:
 // ifndef::imagesdir[:imagesdir: ./images]
 :imagesdir: ./images
-.Bild generiert via ChatGPT am 10.11.2024, Es zeigt eine Werkstatt mit Raspberry PIs
-image::RaspiGarage.webp[Raspi Garage,1024,1024]
+.Bild generiert via ChatGPT am 14.06.2025, Es zeigt Homeserver Hogerer bei einem Stammtisch
+image::Homeserver-Hogererstammtisch.webp[Homeserver Hogererstammtisch,1024,1024]
 :icons: font
 :sectnums:
 :xrefstyle: short
-:url-raspidoc: https://www.raspberrypi.com/documentation/
+:url-unraiddoc: https://docs.unraid.net/
 
 == Quellen
 
-* {url-raspidoc}[Offizielle Raspberry Pi Dokumentation at Github,role=external,window=_blank]
-* link:https://www.techrepublic.com/article/raspberry-pi-cheat-sheet/[Raspberry Pi Details]
-* link:https://cheatography.com/funthomas424242/cheat-sheets/basics-zum-raspberry-pi/[Raspberry Pi Cheat Sheet von Huluvu424242 (ex FunThomas424242),role=external,window=_blank]
+* {url-unraiddoc}[Offizielle Unraid Dokumentation,role=external,window=_blank]
+* link: https://www.youtube.com/watch?v=cB5n_cWJor8[Du willst einen Homeserver (glaub mir),role=external,window=_blank]
+* link: https://www.youtube.com/watch?v=tW0EFpPs700[Unraid Experiment,role=external,window=_blank]
+* link: https://www.youtube.com/watch?v=YeibHOMURPI[Wirklich ernst zu nehmende Unraid Kritik,role=external,window=_blank]
+* link: https://www.youtube.com/watch?v=BJPNaJA7GFg[Unraid Erste Schritte vom Uraid Überflieger,role=external,window=_blank]
 
-include::hardware/01-uebersicht.adoc[]
+include::01-vorwort.adoc[]
 
-include::software/01-uebersicht.adoc[]
+include::02-raspi.adoc[]
 
-include::projekte/01-uebersicht.adoc[]
 
 
 // ## Metadaten
