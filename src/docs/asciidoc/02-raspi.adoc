@@ -8,7 +8,7 @@ Da keine große Leistung nötig war, suchte ich kurz ob es mit einem Raspi geht 
 
 Nur zum Verständnis hier noch einen kurzen Einschub was ich speicherte und wo und dann wie konkret ich meine Backups durchführte.
 
-
+![image](src/docs/asciidoc/images/Verzeichnisliste.png)
 
 
 * xref:index.adoc[Zurück zur Übersicht]
