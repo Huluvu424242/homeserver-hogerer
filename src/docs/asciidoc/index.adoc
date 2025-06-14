@@ -1,4 +1,4 @@
-= Raspi-Garage
+= Homeserver Hogerer
 Thomas Schubert (Huluvu424242) <huluvu424242@gmail.com>
 v1.0, {docdate}
 :keywords: raspi-garage,raspi,garage,raspberry,raspberry-pi,tutorial,DIYs
