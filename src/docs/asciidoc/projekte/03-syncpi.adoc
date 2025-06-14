@@ -1,0 +1,304 @@
+:imagesdir: ./images
+
+== Aufbau eines Sync PI mit Resilio
+
+// Aktuelle Anleitung: https://docs.google.com/document/d/1e8PSpYmB3lB-aiP_I1Ctmw6ml3CtudAvyRwGx4Q4UPc/edit?tab=t.0
+
+=== Quellen
+
+* link:https://xxx[Resilio Sync auf PI aufsetzen - invalider Link]
+
+=== Ziel
+
+Die im Laufe des Lebens erwobenen Informationen wie eBooks, mp3 Alben, Videos und allerlei eingescannte Dokumente für die
+Steuererklärungen oder die Befunde der ärztlichen Untersuchungen, sollen an einer Stelle gespeichert,
+ausgelesen und idealerweise beim Crash von Festplatten auch schnell wieder hergestellt werden können.
+
+Die Aufgabe wäre eine typische Aufgabe für ein NAS. Das NAS der Fritzbox ist aber zu langsam, da die CPU schwach ist
+und eigentlich auch schon mit den Routeraufgaben voll zu tun hat. Einen RAID Server aufzubauen schien mir zu teuer und
+mit Kanonen auf Spatzen geschossen. Also muss es ein Raspi schaffen - zumindest am Anfang.
+
+Da ich das System bereits aufgebaut habe, beschreibe ich hier eigentlich nur die Historie wie ich zu meinem aktuellen
+System gekommen bin. Angefangen habe ich mit einem Raspi 4b Komplettset mit Gehäuse, Netzteil, Lüfter und Kühlkörper,
+einer mobilen 5 GB USB Festplatte und der Software
+link:https://www.resilio.com/sync/[Resilio Sync], einer Software basierend auf dem Bittorrent Protokoll und geschaffen von der Firma die auch Bittorrent und μTorrent erschaffen haben. Also einer Software die ihrer Historie nach schon für
+Qualtität stand.
+
+Die erste Idee war, einen Raspi mit einer Festplatte zu haben auf der alles
+landet und dann diverse Clients wie Laptop, Handy oder Tablet, welche Daten und Informationen generieren und lokal im
+Filesystem speichern. Über Resilio Sync sollen diese abgelegten Daten dann mit der Festplatte des Raspi synchronisiert
+werden, so dass auf allen Geräten immer der gleiche Stand ist.
+
+Die zweite Idee war, die Informationen nach Inhalten zu gliedern und je Inhaltsart ein Verzeichnis auf der HDD des Raspi
+von Resilo verwalten zu lassen. Das führte bei mir zu folgender fachlichen Aufteilung bzw. zu folgenden Verzeichnissen
+mit Synchronisation:
+
+books-sync:: Hier liegen meine eBooks ab. Für die Ordnung im Verzeichnis sorgt Calibre. Ich habe es so organisiert,
+dass dies das Verzeichnis ist, welches Calibre als lokale Datenbank nutzt.
+
+music-sync:: Hier liegen meine mp3s ab. Damit im Verzeichnis selbst Ordnung herrscht, nutze ich
+link:https://udse.de/audioexpert/[AudioExpert] in einer lizenzierten Version
+(lizensiert weil meine Anzahl ein hohes Limit überschritten hat).
+
+filme-sync:: Hier liegen Filme und Videos ab, die entweder gekauft oder privater Natur (also selbst aufgenommen) sind.
+Ich bevorzuge dabei das link:https://de.wikipedia.org/wiki/DVD-Video[DVD-Video] Format. Es ist zwar das älteste,
+funktioniert aber gut auf dem vlc Player und man hat die wenigsten Copyright Probleme, da man hier noch
+private Kopien ziehen konnte ohne Sperren umgehen zu müssen (Private Anmerkung: Aktuelle DVDs oder Blue rays sind
+eine Frechheit, da kaufe ich die DVD und dann kann ich sie am PC nicht schauen weil ich sie nicht digitalisiert
+bekomme wegen Kopierschutz. Ich kenne keinen Laptop mehr mit DVD Device und zum Schauen will ich doch das nicht
+extra anstecken etc. Da braucht sich keiner wundern wenn alle streamen. Von wegen der Mensch ist so faul geworden -
+nein die Industrie ist so gierig geworden!)
+
+ablage-sync:: Verzeichnis in dem ich alle möglichen Dokumente aufbewahre. Von Verträgen der neuen Mobilfunkanbieter,
+bis zu ärtzlichen Gutachten sowie Notizen zu Zählerständen etc.
+
+Anhand der Daten sieht man vielleicht schon, dass man solch einen PI nicht unbedingt für die Nutzung aus dem Internet
+freigeben sollte. Konkret habe ich mein Netzwerk abgeschottet und nicht eine Portweiterleitung erstellt. Vom Handy
+kommt man trotzdem drauf. Die Lösung ist VPN. Ist das Handy Teil des eigenen Netzes, muss nix freigegeben werden. Das
+VPN lässt sich schnell, einfach und sicher über den Fritzbox Router mittels WireGuard und der WireGuard App auf dem
+Client aufbauen.
+
+Die genannten Ordner waren nur die ersten. Inzwischen habe ich ca. 20 Ordner in der Synchronisation und sowohl die
+Datenkategorien als auch die Daten selber scheinen im Laufe des Lebens immer weiter anzuwachsen. Letzteres erscheint
+verständlich wenn man sich überlegt, dass es eBooks bereits in den 90ern gab und mp3 also Musik erst in den 2000ern als
+neue Kategorie dazu kam. Auf diese Art & Weise werden uns auch in neuen Jahrzenten noch weitere Kategorien beglücken.
+
+
+=== Architektur Aufbau
+
+TODO: kleines Bildchen was zeigt wie die Nodes und Devices im Netzwerk zusammenarbeiten und wer welche Aufgabe hat.
+
+
+=== Resilio Sync
+
+Resilio Sync habe ich damals in der Version Resilio Sync 2.5.12 (1191) auf meinen Raspi installiert
+und dort auch nicht weiter aktualisiert - das wäre ein zukünftiger nächster Schritt. In der gleichen
+Version habe ich Resilio auch auf meinem Windows Laptop installiert. In den Versionen brauchte man noch
+keine Lizenz. Inzwischen habe ich die Windows Version aktualisiert und besitze nun eine Lizenz. Da es schon
+wieder eine Zeit her ist und sich das Lizenzmodell damals geändert hat, kann ich nicht mehr sagen ob ich Geld
+dafür bezahlt habe. Falls ja, dann sehr wenig, denn ich habe es mir nirgends notiert oder von der Steuer
+abgesetzt.
+
+Während ich an diesem Artikel schreibe ist wieder Zeit ins Land gegangen und ich habe versucht den Pi zu aktualisieren.
+Das ging diesmal gründlich schief - er startete nicht mehr. Wenn ich im Nachgang darüber nachdenke kann es einfach
+daran gelegen haben, dass ich die USB Platte aus Angst vor Schäden abgezogen hatte wärend des Upgrades, aber da bin ich
+leider erst drauf gekommen als ich den Pi komplett frisch mit der Version Bookworm des OS aufgesetzt habe. Dabei ist mir
+aufgefallen, dass er ohne Platte nicht starten kann, da ich ja die Platte für das Automounten in der /etc/fstab
+eingetragen hatte. Aber egal, jetzt mal endlich zur Sache wie ich den aktuellen Pi aufgesetzt habe.
+
+=== Pi mit Resilio Sync aufsetzen
+
+==== Standard Image aufspielen
+
+Hierzu einfach den Raspberry Pi Imager auf einem Windows Host installieren und eine SD Karte mit dem neusten OS
+bespielen. Dieser Pi soll nur für Resilio Sync als Read/Write Server mit Netzwerkshares im Heimnetz dienen, daher
+wählen wir unter sonstigen Images die Variante "Raspberry Pi OS Lite (64-bit) A Port of Debian Bookworm with no
+desktop environment (Compatible with Raspberry Pi 3/4/400/5)". Von der Hardware her nutze ich einen Raspi 4 mit einem
+Gehäuse welches 2 Lüfter beinhaltet und bei dem  mindestens 3 Kühlkörper im Inneren verklebt sind. Irgendwann in der
+Zukunft will ich die Lüfter loswerden - ich hoffe es geht mit einem Flirc Gehäuse aus Alu aber probiert habe ich es
+noch nicht.
+
+Über den Imager ist man in der Lage gleich die Grundkonfigurationen durchzuführen, Locale, Zeitzone, Tastaturlayout,
+WLAN und weitere Dinge - hier sollte man so viel wie möglich gleich vorkonfigurieren.
+Wenn das Image aufgespielt ist, kann man die SD Karte mit dem Image in den Pi stecken und diesen starten.
+
+==== Mit dem Pi verbinden
+
+Am Pi wird weder Monitor noch Tastatur oder Maus benötigt. Wir erledigen alle Aufgaben in dem wir uns von Windows aus
+in der gitbash über ssh mit dem pi verbinden.
+
+Dazu schauen wir zunächst mal in der Fritz Box auf welcher IP Adresse der Pi läuft. Einmal dort, legen wir auch gleich
+fest, dass dieses Gerät immer die gleiche IP bekommen soll. Wem das zu kompliziert ist oder wer keine Fritz Box nutzt,
+der konfiguriert im Imager einfach einen guten und einfachen Namen unter Hostname z.B. pisync (.local) und findet
+einfach über ping heraus welche ip der Pi hat:
+
+[source,bash]
+----
+ping -4 pisync
+
+Ping wird ausgef▒hrt f▒r pisync.fritz.box [192.168.178.29] mit 32 Bytes Daten:
+Antwort von 192.168.178.29: Bytes=32 Zeit=12ms TTL=64
+Antwort von 192.168.178.29: Bytes=32 Zeit=15ms TTL=64
+Antwort von 192.168.178.29: Bytes=32 Zeit=12ms TTL=64
+Antwort von 192.168.178.29: Bytes=32 Zeit=14ms TTL=64
+----
+Den Parameter -4 nutze ich um im IP4 Adressraum zu bleiben auch wenn der Pi vermutlich eine IP6 Adresse nutzt.
+(Wie oben erwähnt trägt mein Pi den Namen pisync)
+In der Antwort wird die IP4 Adresse aufgelistet und diese nutzen wir nun zum Verbinden. (Weil ich keine Erfahrung mit
+IP6 habe, nutze ich immer noch IP4 Tools aber wer sich mit IP6 auskennt, kann gern darüber gehen)
+
+Jetzt also auf den Pi verbinden mit:
+
+[source,bash]
+----
+ssh pi@192.168.178.29
+<Passwort eingeben wenn Prompt dazu auffordert>
+----
+Das pi vor dem @ ist der 'root' Nutzer des Pi und die Zahlen hinter dem @ sind die oben per ping ermittelte IP Adresse des
+pi.  Nach der Eingabe des Passwortes sollten wir eingeloggt sein und uns unter /home/pi befinden. Also im Home des
+Nutzers pi, welcher auch sudo Rechte besitzen sollte.
+
+==== Software aktualisieren
+
+Wie immer bevor wir etwas installieren, bringen wir das gesamte System auf den neusten Stand und booten neu
+um sicher zu stellen, dass alles geht.
+
+[source,bash]
+----
+sudo apt-get update
+sudo apt-get upgrade
+sudo shutdown -r now
+----
+
+Anschließend wieder per ssh neu einloggen:
+
+[source,bash]
+----
+ssh pi@<ip-adresse>
+<Passwort eingeben wenn Prompt dazu auffordert>
+----
+
+==== Paketquellen erweitern
+
+Da Resilio Sync kein Standard Package in Debian ist und scheinbar nicht in der Distribution enthalten, müssen wir
+dem System erstmal erklären wo es die Pakete zur Installation von Resilio findet. Das machen wir, indem wir die
+Source Listen anpassen. Leider hat sich die Lokation in den letzten Jahren oft geändert aber aus meiner Sicht wird
+es immer einheitlicher, so dass die aktuellen URLs vermutlich schon deutlich stabiler sein werden als die davor.
+
+Um die Sourcen für Resilio Sync dem System hinzuzufügen, erstellen wir eine Datei resilio-sync.list mit folgendem Kommando:
+
+[source,bash]
+----
+sudo nano /etc/apt/sources.list.d/resilio-sync.list
+----
+
+Als Inhalt geben wir eine Zeile ein:
+
+> deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free
+
+Wie für den Nano Editor üblich Speichern wir mit Ctrl+O und Enter und Verlassen ihn wieder mit Ctrl+X.
+
+Damit sind die Quellen bekannt, werden vom System aber abgelehnt, da nicht als sicher eingestuft.
+Also installieren wir noch die Schlüssel mit denen die Echtheit der Quellen vom System geprüft werden kann.
+
+[source,bash]
+----
+wget -qO - https://linux-packages.resilio.com/resilio-sync/key.asc | sudo apt-key add -
+----
+
+Fragt mich nicht nach Details aber die - Zeichen sind wichtig. Typische bash Magie.
+Aktuell erscheint eine Warnung, dass es mal wieder ein neues System zum Verifizieren der Quellen gibt. Mir als Nutzer
+ist das Brust, denn davon verstehe ich eh nix. Eins ist aber klar in ein paar Jahren wird das so nicht mehr gehen.
+Die Warnung lautet irgendwas in diese Richtung:
+
+> deprecated -> man apt-key(8) -> trusted.gpg.d
+
+Nachdem wir die Quellen aufgenommen und die Keys hinzugefügt haben, können wir mal wieder aktualiseren:
+
+[source,bash]
+----
+sudo apt-get update
+----
+
+Zur Belohnung kennt das System jetzt die Pakete und wir können Resilio Sync installieren:
+
+[source,bash]
+----
+sudo apt-get install resilio-sync
+----
+
+Anschließend aktivieren wir die Systemsteuerung für den Hintergrunddienst (Service) von Resilio:
+
+[source,bash]
+----
+sudo systemctl enable resilio-sync
+----
+
+Und starten nun den Service über:
+
+[source,bash]
+----
+sudo service resilio-sync start
+----
+
+Ob er läuft können wir prüfen über: https://pisync:8888/gui/
+Hier müsst ihr pisync durch Euren Hostname des Pi oder dessen IP Adresse ersetzen.
+
+==== Lizenz übertragen
+
+Falls ihr in Besitz einer Resilio Lizenz seid, könnt ihr diese vom Windows Rechner in einer neuen gitbash wie folgt
+an den Pi übertragen:
+
+[source,bash]
+----
+ scp ./Resilio\ Sync.btskey pi@pisync:/home/pi/Resilio\ Sync.btskey
+<Passwort eingeben für pi>
+----
+
+Die \ benötige ich, da meine Lizenzdatei ein Leerzeichen enthält und das für die Bash geqoutet werden muss. Auf dem
+Windows Rechner von dem aus ich den Befehl absetze, liegt die Lizenzdatei direkt in dem Folder in dem ich mich beim
+Eingeben des Kommandos befinde. Daher der ./ vor dem Dateinamen. Ziel auf dem Pi ist das Verzeichnis /home/pi.
+Nimm kein anderes, da man immer auch Rechte zum Schreiben braucht. Es gehen also nur Zielverzeichnisse auf die der pi
+Nutzer ohne sudo schreiben darf.
+
+Leider kann Resilio nicht aus /home/pi lesen, weil es dazu keine Rechte besitzt. Also schnell wieder auf en Pi angemeldet
+oder die noch offene andere gitbash genutzt und die Lizenzdatei ein Verzeichnis höher geschoben unter /home. Von dort
+kann die UI Oberfläche von Resilio im Browser die Lizenzdatei einlesen.
+
+==== Nützliche Skripte für den pi Nutzer
+
+Allgemein ist der Pi jetzt mit Resilio Sync soweit konfiguriert und arbeitsfähig. Bei mir startet Resilio auch nach einem Neustart automatisch, so dass ich diesmal gar kein eigenes Start/Stop Skript schreiben musste. Ihr könnt hier also eigentlich mit Lesen aufhören, der Rest ist optional.
+
+Allerdings sind mir bei der Arbeit ein paar übliche Schritte aufgefallen, die man immer wieder vornehmen muss. Weil man mal ein paar Linux Updates einspielt oder es einen Stromausfall gab etc. Genau für diese
+Zwecke habe ich im /home/pi ein paar "Skripte" (das sind Einzeiler keine Skripte) abgelegt:
+
+.resilio_start.sh
+[source,bash]
+----
+ #!/bin/sh
+sudo service resilio-sync start
+----
+
+.resilio_stop.sh
+[source,bash]
+----
+ #!/bin/sh
+sudo service resilio-sync stop
+----
+
+.restart.sh
+[source,bash]
+----
+ #!/bin/sh
+sudo shutdown -r now
+----
+
+.shutdown.sh
+[source,bash]
+----
+ #!/bin/sh
+sudo shutdown now
+----
+
+Im Verzeichnis noch den Befehl zur Vergabe des Ausführungsrechts ausführen und dann könnt ihr die Skripte nutzen.
+
+[source,bash]
+----
+chmod +x *.sh
+----
+
+==== Samba Freigabe einrichten
+
+Hierzu unter folgender Doku schauen:
+xref:../software/03-manualconfig.adoc#samba-freigaben-einrichten[Samba Freigaben einrichten]
+
+xref:../index.adoc#softwareübersicht[Zurück zur Übersicht].
+
+
+
+
+
+
+
+
+

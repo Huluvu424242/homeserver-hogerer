@@ -1,0 +1,10 @@
+== Projektübersicht
+
+Auf den folgenden Seiten beschreibe ich ein paar Projekte von mir. Vorwiegend geht es natürlich um den Pi aber
+generell geht es vor allem um die Lösung zum Problem und dabei kommt dann eben nicht immer ein Pi zum Einsatz.
+Beispielsweise finde ich, dass ein Pi zum Wiedergeben von Filmen mit Plex oder Jellyfin evtl. zu schwach ist bzw. für die Aufgabe evtl. ungeeignet. Möglich, dass ich es nur falsch angepackt habe aber so ist zumindest
+mein aktueller Stand.
+
+* xref:projekte/03-syncpi.adoc#aufbau-eines-sync-pi-mit-resilio[Sync Pi mit Resilio Sync]
+
+// * xref:projekte/02-ipfsnode.adoc#ipfs-node-erstellen[IPFS Node erstellen]

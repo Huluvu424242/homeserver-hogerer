@@ -1,0 +1,17 @@
+name: CI Engine
+
+on:
+  push:
+  workflow_dispatch: {}
+
+jobs:
+  call-workflow-1-in-local-repo:
+    uses: ./.github/workflows/build.yml
+  call-workflow-2-in-local-repo:
+    needs: call-workflow-1-in-local-repo
+    uses: ./.github/workflows/generate-docs.yml
+  call-workflow-3-in-local-repo:
+    if: ${{ always() }}
+    needs: [call-workflow-1-in-local-repo,call-workflow-2-in-local-repo]
+    uses: ./.github/workflows/generate-ghpages.yml
+

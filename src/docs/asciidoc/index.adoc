@@ -1,0 +1,40 @@
+= Raspi-Garage
+Thomas Schubert (Huluvu424242) <huluvu424242@gmail.com>
+v1.0, {docdate}
+:keywords: raspi-garage,raspi,garage,raspberry,raspberry-pi,tutorial,DIYs
+:example-caption!:
+:Author:    Thomas Schubert (Huluvu424242) et. al
+:Email:     <huluvu424242@gmail.com>
+:toc-title: Inhaltsverzeichnis
+:toc:
+// ifndef::imagesdir[:imagesdir: ./images]
+:imagesdir: ./images
+.Bild generiert via ChatGPT am 10.11.2024, Es zeigt eine Werkstatt mit Raspberry PIs
+image::RaspiGarage.webp[Raspi Garage,1024,1024]
+:icons: font
+:sectnums:
+:xrefstyle: short
+:url-raspidoc: https://www.raspberrypi.com/documentation/
+
+== Quellen
+
+* {url-raspidoc}[Offizielle Raspberry Pi Dokumentation at Github,role=external,window=_blank]
+* link:https://www.techrepublic.com/article/raspberry-pi-cheat-sheet/[Raspberry Pi Details]
+* link:https://cheatography.com/funthomas424242/cheat-sheets/basics-zum-raspberry-pi/[Raspberry Pi Cheat Sheet von Huluvu424242 (ex FunThomas424242),role=external,window=_blank]
+
+include::hardware/01-uebersicht.adoc[]
+
+include::software/01-uebersicht.adoc[]
+
+include::projekte/01-uebersicht.adoc[]
+
+
+// ## Metadaten
+//
+// .Built-in
+// asciidoctor-version:: {asciidoctor-version}
+// safe-mode-name:: {safe-mode-name}
+// docdir:: {docdir}
+// docfile:: {docfile}
+// imagesdir:: {imagesdir}
+// docdate:: {docdate}

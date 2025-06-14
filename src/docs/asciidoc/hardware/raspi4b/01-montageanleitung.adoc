@@ -1,0 +1,24 @@
+:imagesdir: ./images
+
+=== Montageanleitung (Raspberry Pi 4 Modell B)
+
+==== Quellen
+
+* https://www.youtube.com/watch?v=aV6cQ226wak[Raspberry Pi 4 (Model B 4GB) montieren und anschließen Anleitung,role=external,window=_blank]
+
+==== Kühler ankleben
+
+image:./raspi4b_vorKühleranbau.svg[title=Vor Kühleranbau]
+
+image:./raspi4b_nachKühleranbau.svg[title=Nach Kühleranbau]
+
+xref:../../index.adoc#content[Zurück zur Übersicht].
+
+==== Lüfter anschließen
+
+* Rotes Kabel an Pin 4 der GPIO Schnittstelle (5 Volt +)
+* Schwarzes Kabel an Pin 6 der GPIO Schnittstelle (Ground)
+
+image:./raspi4b_lüfteranschluss.svg[title=Lüfteranschluss]
+
+xref:../../index.adoc#content[Zurück zur Übersicht].
