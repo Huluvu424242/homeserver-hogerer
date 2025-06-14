@@ -2,15 +2,53 @@
 
 == Variante 1 mit Raspi
 
+=== Konzept
+
 Die Idee war einfach. Nachdem ich einige Versuche mit resilio Sync unternommen hatte ein paar Verzeichnisse zwischen meinen Laptops, Handies und Tablets zu synchronisieren, wollte ich einen "Master" Server haben gegen den alle Geräte synchronisiert werden.
 
 Der Server brauchte nicht viel Leistung, denn die Synchronisation konnte ja wie bisher direkt zwischen den Geräten erfolgen und er selbst konnte gern langsam alle Änderungen nachziehen. Wichtig war nur wo der korrekte und vollständige Datenbestand zum Schluss liegen sollte - nämlich beim "Master"-Server. Für resiliosync hatte ich eine einfache Lizenz gekauft und zu der Technologie hatte ich Vertrauen,da das bittorrent Protokoll genutzt wurde und es entweder eine Art Nachfolger war oder die Leute welche die Software bereistellten auch schon bittorrent erdacht hatten.
 
 Da keine große Leistung nötig war, suchte ich kurz ob es mit einem Raspi geht und ja es gab schon Lösungen also frisch ans Werk. Raspi aufgesetzt, resilio instaliert und USB Platte dran und fertig. Die Kombi lief über Jahre stabil und ich war zufrieden. Eigentlich hätte ich nix ändern müssen aber mir war nicht klar wie sicher bzw. Auffwändig meine Backupstrategie war. Immer wenn ich dachte, zog ich von der raspi Platte ein Backup und legte es auf einer anderen externen USB Platte ab. Das war auf jeden Fall nicht die sicherste Art. Letztlich war das Backup der Punkt weshalb ich immer am überlegen war, wie ich das sicherer gestalten kann.
 
+=== Inhalte
+
 Nur zum Verständnis hier noch einen kurzen Einschub was ich speicherte und wo und dann wie konkret ich meine Backups durchführte.
 
 image:Verzeichnisliste.png[title=Verzeichnisliste]
+
+ablage-sync:: Dinge wie eingesannte Verträge von Stromversorgern oder Betriebskostenabrechnungen etc.
+ahnen-sync:: Urkunden und Nachweise meiner Vorfahren zum Zwecke der Ahnenforschung.
+backup-sync:: Zwischenspeicher für Backups
+books-sync:: calibre Bibliothek
+dev-sync:: bare clone der github repos + sicherungen spezieller software die man nicht mehr bekommt.
+filme-sync:: Kopien gekaufter Filme und Downloads von youtube Videos
+foto-sync:: Meine Fotos - ganz wenige, da ich generell flickr als meinen master nutze
+freiebilder-sync:: Diverse erstellt Diagramme oder Bilder für Entwicklungsprojekte oder Präsentationen
+gramps-sync:: Sicherung eines Stammbaumes (nicht mehr aktiv in Arbeit)
+input-sync:: Input Kanal von allen Geräte zur Bearbeitung eingereicht: also TODO Kanal
+käufe:: Diverse gekaufte Dinge wie amazon mp3 Lieder etc.
+lieder-sync:: Entwicklungsprojekte mit Noten, midi etc.
+lizenzen-sync:: Kopien meiner erworbenen Lizenzen
+music-sync:: audio-expert Bibliothek
+musikvideos-sync:: youtube Videos von alten Songs der 80er als die Videos gerade aufkamen.
+raspi-sync:: Images für den raspi
+sylvia-ablage-sync:: Familie
+sylvia-input:: Familie
+tsc-private-sync:: private Drafts und Schreibübungen etc.
+vm-images:: virtual box images, mit os lizenzen die bezahlt wurden und daher aufgehobenn werden
+zugänge-sync:: Zertifikate aller Art für den Zugriff auf andere Rechner oder Portale
+
+Auf den mobilen Endgeräten wie Handy oder Tablet habe ich dann meist nur music-sync und input-sync drauf. So kann ich meine Musik auf ein mobiles Device syncen und dort offline abspielen. Hier kommt mir eine Eigenschaft von resilio sync zu Gute: mobile Geräte unterstützen selektives syncen, beim Desktop braucht man eine entsprechende Lizenz dafür.
+
+Auf einem Laptop hatte ich dann zunächst die Musik verwaltet mit audio-expert. Da liegt die ganze Musik dann komplett im Verzeichnis des Laptops. Das nimmt viel Platz ein. Beim nächsten Laptop kam dann noch das Bücherverzeichnis von calibre hinzu. Wenn ich jetzt noch Filme und Videos drauf verwalten wollte dann benötigt es so viel Platz, dass es nicht mehr auf einen Laptop passt. Daher war die Idee ein Laptop für Musik verwalten, ein Laptop für Bücher verwalten. Dann aber hast Du den Laptop für Bücher in der Hand und kaufst bei amazon spontan Musik und schon geht die musik in den input-sync und irgendwann erst setzt Du dich hin und kopierst die Dateien. Das war jedenfalls nicht praktisch.
+
+Mein Wunsch für die Zukunft wäre auch noch alle Filme und Videos mit Plex oder Jellyfin verwalten zu können.
+
+=== Backupkonzept
+
+Mein Backup bestand darin, nach individuellem Gefühl mal ein Backup von der Musik, den Videos, den Ahnen oder sonstigem zu ziehen. Man hat ja so in etwa im Gefühl wo im letzten Monat was dazu gekommen ist. Gepeichert habe ich es immer auf externen USB Festplatten. Je Thema eine Platte - damit ist klar, dass da einiges an Platten zusammen kam und der Überblick wieder genauso schnell weg war wie vor dem Ganzen.
+
+Daher suchte ich nach anderen Lösungen und ging in Richtung homeserver.
 
 
 * xref:index.adoc[Zurück zur Übersicht]
