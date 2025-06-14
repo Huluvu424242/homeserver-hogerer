@@ -19,10 +19,10 @@ image::Homeserver-Hogererstammtisch.webp[Homeserver Hogererstammtisch,1024,1024]
 == Quellen
 
 * {url-unraiddoc}[Offizielle Unraid Dokumentation,role=external,window=_blank]
-* link: https://www.youtube.com/watch?v=cB5n_cWJor8[Du willst einen Homeserver (glaub mir),role=external,window=_blank]
-* link: https://www.youtube.com/watch?v=tW0EFpPs700[Unraid Experiment,role=external,window=_blank]
-* link: https://www.youtube.com/watch?v=YeibHOMURPI[Wirklich ernst zu nehmende Unraid Kritik,role=external,window=_blank]
-* link: https://www.youtube.com/watch?v=BJPNaJA7GFg[Unraid Erste Schritte vom Uraid Überflieger,role=external,window=_blank]
+* link:https://www.youtube.com/watch?v=cB5n_cWJor8[Du willst einen Homeserver (glaub mir),role=external,window=_blank]
+* link:https://www.youtube.com/watch?v=tW0EFpPs700[Unraid Experiment,role=external,window=_blank]
+* link:https://www.youtube.com/watch?v=YeibHOMURPI[Wirklich ernst zu nehmende Unraid Kritik,role=external,window=_blank]
+* link:https://www.youtube.com/watch?v=BJPNaJA7GFg[Unraid Erste Schritte vom Uraid Überflieger,role=external,window=_blank]
 
 include::01-vorwort.adoc[]
 

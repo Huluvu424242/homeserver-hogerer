@@ -1,3 +1,5 @@
+:imagesdir: ./images
+
 == Variante 1 mit Raspi
 
 Die Idee war einfach. Nachdem ich einige Versuche mit resilio Sync unternommen hatte ein paar Verzeichnisse zwischen meinen Laptops, Handies und Tablets zu synchronisieren, wollte ich einen "Master" Server haben gegen den alle Geräte synchronisiert werden.
@@ -8,7 +10,7 @@ Da keine große Leistung nötig war, suchte ich kurz ob es mit einem Raspi geht 
 
 Nur zum Verständnis hier noch einen kurzen Einschub was ich speicherte und wo und dann wie konkret ich meine Backups durchführte.
 
-![image](src/docs/asciidoc/images/Verzeichnisliste.png)
+image:Verzeichnisliste.png[title=Verzeichnisliste]
 
 
 * xref:index.adoc[Zurück zur Übersicht]
