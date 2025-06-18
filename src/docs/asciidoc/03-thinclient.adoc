@@ -1,0 +1,94 @@
+:imagesdir: ./images
+
+== Variante 2 mit einem Thin Client
+
+=== Quellen
+
+* https://youtu.be/K10bMgX0qoc?si=zRTbArzBR66EMsTl[Gebrauchte Thin-Clients im Test]
+* https://www.youtube.com/watch?v=OOHszBodhbc[Ich hab mir einen lautlosen Mini-Homeserver gebaut]
+
+=== Motivation
+
+Nachdem ich erst lange keinen Raspi mehr bekam, weil sie einfach nicht zu haben waren und dann mir lange keinen mehr
+leisten konnte, weil sie plötzlich so teuer waren, dass ich nicht mehr bereit war das Geld dafür auszugeben, hab ich
+nach Alternativen gesucht.
+
+So kam ich zum oben verlinkten Artikel von ct3003 über Thin-Clients. Dort hieß es der Dell Wyse 5070 und der HP T620
+würden sich auch als Homeserver mit ubuntu und plex eignen und wären auch ein guter raspi Ersatz. Den älteren HP sollte
+man wohl für 30 Euro bekommen und den Dell für etwa 90 Euro. Spoiler: Der Dell ist leistungstärker als der HP aber
+vergiss die Kombination unraid/plex oder unraid/jellyfin auf dem Teil.
+
+=== Konzept
+
+Was wollte ich? Einen Homeserver, auf dem ich alles sicher ablegen kann und mit dem ich auch Shares im eigenen Heimnetz
+freigeben kann und zu dem ich auch einfach per vpn vom Handy unterwegs ran komme.
+
+Was hab ich genommen? Den Dell Wyse 5070 Thin Client als Homeserver mit unraid.
+
+Was war der Kompromis? Das Teil hat einen Lüfter und stört beim Schlafen. Braucht also Platz auf dem Balkon, aber dafür
+spare ich hunderte Euros im Vergleich zur Quelle mit dem lautlosen Mini-Homeserver von AliExpress. Er ist
+leisstungsstärker als ein Raspi 4 aber nicht stark genug für die Verwaltung und das Streamen von Videos.
+
+Wie funktioniert das Ganze? Also den Zugriff per vpn vom Handy ins Heimnetz hatte ich zufällig schon über meine FritzBox
+mittels wireguard gelöst. Blieb noch die sichere Speicherung der Daten. Das war der Grund warum ich unraid nahm. Nicht
+so teuer wie ein echtes Raid System aber durch die Parität auf jeden Fall sicherer als ein Raspi mit einer Platte.
+
+Wichtig: Unraid empfielt ausschließlich S-ATA Platten einzusetzen. Mein Konzept sah aber ausschließlich den Einsatz von
+mobilen USB Festplatten ohne eigene Stromversorgung vor. Ein solcher Einsatz ist unter Profis hochumstritten!? Nein,
+nicht wirklich - Profis sagen ganz klar - ist nicht ok ein solcher Einsatz. Hintergrund ist wohl: mobile USB Platten
+sind nicht dafür gedacht die ganze Zeit zu drehen und wollen sich irgendwann schlafen legen. Wenn sie aber gerade
+schlafen und unraid will was drauf schreiben, kann das zu Datenverlusten führen, weil nicht alles geschrieben wird.
+
+Warum das Verhalten so ist, in Zeiten von Resilience und bekannten Pattern wie retry, weiß ich nicht aber ich glaube das
+den Profis einfach mal ohne es groß zu hinterfragen. Und wie immer mache ich es trotzdem, denn ich habe das so noch
+nicht erlebt und jedes Kind muss halt seine eigene Erfahrung sammeln auch wenn es schon über 50 ist.
+
+Hier mal eine Skizze wie ich mir das System vorgestellt habe:
+
+
+
+
+
+
+=== Inhalte
+
+Nur zum Verständnis hier noch einen kurzen Einschub was ich speicherte und wo und dann wie konkret ich meine Backups durchführte.
+
+image:Verzeichnisliste.png[title=Verzeichnisliste]
+
+ablage-sync:: Dinge wie eingesannte Verträge von Stromversorgern oder Betriebskostenabrechnungen etc.
+ahnen-sync:: Urkunden und Nachweise meiner Vorfahren zum Zwecke der Ahnenforschung.
+backup-sync:: Zwischenspeicher für Backups
+books-sync:: calibre Bibliothek
+dev-sync:: bare clone der github repos + sicherungen spezieller software die man nicht mehr bekommt.
+filme-sync:: Kopien gekaufter Filme und Downloads von youtube Videos
+foto-sync:: Meine Fotos - ganz wenige, da ich generell flickr als meinen master nutze
+freiebilder-sync:: Diverse erstellt Diagramme oder Bilder für Entwicklungsprojekte oder Präsentationen
+gramps-sync:: Sicherung eines Stammbaumes (nicht mehr aktiv in Arbeit)
+input-sync:: Input Kanal von allen Geräte zur Bearbeitung eingereicht: also TODO Kanal
+käufe:: Diverse gekaufte Dinge wie amazon mp3 Lieder etc.
+lieder-sync:: Entwicklungsprojekte mit Noten, midi etc.
+lizenzen-sync:: Kopien meiner erworbenen Lizenzen
+music-sync:: audio-expert Bibliothek
+musikvideos-sync:: youtube Videos von alten Songs der 80er als die Videos gerade aufkamen.
+raspi-sync:: Images für den raspi
+sylvia-ablage-sync:: Familie
+sylvia-input:: Familie
+tsc-private-sync:: private Drafts und Schreibübungen etc.
+vm-images:: virtual box images, mit os lizenzen die bezahlt wurden und daher aufgehobenn werden
+zugänge-sync:: Zertifikate aller Art für den Zugriff auf andere Rechner oder Portale
+
+Auf den mobilen Endgeräten wie Handy oder Tablet habe ich dann meist nur music-sync und input-sync drauf. So kann ich meine Musik auf ein mobiles Device syncen und dort offline abspielen. Hier kommt mir eine Eigenschaft von resilio sync zu Gute: mobile Geräte unterstützen selektives syncen, beim Desktop braucht man eine entsprechende Lizenz dafür.
+
+Auf einem Laptop hatte ich dann zunächst die Musik verwaltet mit audio-expert. Da liegt die ganze Musik dann komplett im Verzeichnis des Laptops. Das nimmt viel Platz ein. Beim nächsten Laptop kam dann noch das Bücherverzeichnis von calibre hinzu. Wenn ich jetzt noch Filme und Videos drauf verwalten wollte dann benötigt es so viel Platz, dass es nicht mehr auf einen Laptop passt. Daher war die Idee ein Laptop für Musik verwalten, ein Laptop für Bücher verwalten. Dann aber hast Du den Laptop für Bücher in der Hand und kaufst bei amazon spontan Musik und schon geht die musik in den input-sync und irgendwann erst setzt Du dich hin und kopierst die Dateien. Das war jedenfalls nicht praktisch.
+
+Mein Wunsch für die Zukunft wäre auch noch alle Filme und Videos mit Plex oder Jellyfin verwalten zu können.
+
+=== Backupkonzept
+
+Mein Backup bestand darin, nach individuellem Gefühl mal ein Backup von der Musik, den Videos, den Ahnen oder sonstigem zu ziehen. Man hat ja so in etwa im Gefühl wo im letzten Monat was dazu gekommen ist. Gepeichert habe ich es immer auf externen USB Festplatten. Je Thema eine Platte - damit ist klar, dass da einiges an Platten zusammen kam und der Überblick wieder genauso schnell weg war wie vor dem Ganzen.
+
+Daher suchte ich nach anderen Lösungen und ging in Richtung homeserver.
+
+
+* xref:index.adoc[Zurück zur Übersicht]
