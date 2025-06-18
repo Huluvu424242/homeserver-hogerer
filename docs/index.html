@@ -461,6 +461,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#backupkonzept">3.3. Backupkonzept</a></li>
 </ul>
 </li>
+<li><a href="#variante-2-mit-einem-thin-client">4. Variante 2 mit einem Thin Client</a>
+<ul class="sectlevel2">
+<li><a href="#quellen-2">4.1. Quellen</a></li>
+<li><a href="#motivation">4.2. Motivation</a></li>
+<li><a href="#konzept-2">4.3. Konzept</a></li>
+<li><a href="#inhalte-2">4.4. Inhalte</a></li>
+<li><a href="#backupkonzept-2">4.5. Backupkonzept</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -643,6 +652,195 @@ Aus dieser Zeit stammt Variante 1 = ein Raspi &amp; eine 6 TB Festplatte mit Res
 </div>
 <div class="sect2">
 <h3 id="backupkonzept"><a class="anchor" href="#backupkonzept"></a>3.3. Backupkonzept</h3>
+<div class="paragraph">
+<p>Mein Backup bestand darin, nach individuellem Gefühl mal ein Backup von der Musik, den Videos, den Ahnen oder sonstigem zu ziehen. Man hat ja so in etwa im Gefühl wo im letzten Monat was dazu gekommen ist. Gepeichert habe ich es immer auf externen USB Festplatten. Je Thema eine Platte - damit ist klar, dass da einiges an Platten zusammen kam und der Überblick wieder genauso schnell weg war wie vor dem Ganzen.</p>
+</div>
+<div class="paragraph">
+<p>Daher suchte ich nach anderen Lösungen und ging in Richtung homeserver.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#">Zurück zur Übersicht</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="variante-2-mit-einem-thin-client"><a class="anchor" href="#variante-2-mit-einem-thin-client"></a>4. Variante 2 mit einem Thin Client</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="quellen-2"><a class="anchor" href="#quellen-2"></a>4.1. Quellen</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://youtu.be/K10bMgX0qoc?si=zRTbArzBR66EMsTl">Gebrauchte Thin-Clients im Test</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=OOHszBodhbc">Ich hab mir einen lautlosen Mini-Homeserver gebaut</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="motivation"><a class="anchor" href="#motivation"></a>4.2. Motivation</h3>
+<div class="paragraph">
+<p>Nachdem ich erst lange keinen Raspi mehr bekam, weil sie einfach nicht zu haben waren und dann mir lange keinen mehr
+leisten konnte, weil sie plötzlich so teuer waren, dass ich nicht mehr bereit war das Geld dafür auszugeben, hab ich
+nach Alternativen gesucht.</p>
+</div>
+<div class="paragraph">
+<p>So kam ich zum oben verlinkten Artikel von ct3003 über Thin-Clients. Dort hieß es der Dell Wyse 5070 und der HP T620
+würden sich auch als Homeserver mit ubuntu und plex eignen und wären auch ein guter raspi Ersatz. Den älteren HP sollte
+man wohl für 30 Euro bekommen und den Dell für etwa 90 Euro. Spoiler: Der Dell ist leistungstärker als der HP aber
+vergiss die Kombination unraid/plex oder unraid/jellyfin auf dem Teil.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="konzept-2"><a class="anchor" href="#konzept-2"></a>4.3. Konzept</h3>
+<div class="paragraph">
+<p>Was wollte ich? Einen Homeserver, auf dem ich alles sicher ablegen kann und mit dem ich auch Shares im eigenen Heimnetz
+freigeben kann und zu dem ich auch einfach per vpn vom Handy unterwegs ran komme.</p>
+</div>
+<div class="paragraph">
+<p>Was hab ich genommen? Den Dell Wyse 5070 Thin Client als Homeserver mit unraid.</p>
+</div>
+<div class="paragraph">
+<p>Was war der Kompromis? Das Teil hat einen Lüfter und stört beim Schlafen. Braucht also Platz auf dem Balkon, aber dafür
+spare ich hunderte Euros im Vergleich zur Quelle mit dem lautlosen Mini-Homeserver von AliExpress. Er ist
+leisstungsstärker als ein Raspi 4 aber nicht stark genug für die Verwaltung und das Streamen von Videos.</p>
+</div>
+<div class="paragraph">
+<p>Wie funktioniert das Ganze? Also den Zugriff per vpn vom Handy ins Heimnetz hatte ich zufällig schon über meine FritzBox
+mittels wireguard gelöst. Blieb noch die sichere Speicherung der Daten. Das war der Grund warum ich unraid nahm. Nicht
+so teuer wie ein echtes Raid System aber durch die Parität auf jeden Fall sicherer als ein Raspi mit einer Platte.</p>
+</div>
+<div class="paragraph">
+<p>Wichtig: Unraid empfielt ausschließlich S-ATA Platten einzusetzen. Mein Konzept sah aber ausschließlich den Einsatz von
+mobilen USB Festplatten ohne eigene Stromversorgung vor. Ein solcher Einsatz ist unter Profis hochumstritten!? Nein,
+nicht wirklich - Profis sagen ganz klar - ist nicht ok ein solcher Einsatz. Hintergrund ist wohl: mobile USB Platten
+sind nicht dafür gedacht die ganze Zeit zu drehen und wollen sich irgendwann schlafen legen. Wenn sie aber gerade
+schlafen und unraid will was drauf schreiben, kann das zu Datenverlusten führen, weil nicht alles geschrieben wird.</p>
+</div>
+<div class="paragraph">
+<p>Warum das Verhalten so ist, in Zeiten von Resilience und bekannten Pattern wie retry, weiß ich nicht aber ich glaube das
+den Profis einfach mal ohne es groß zu hinterfragen. Und wie immer mache ich es trotzdem, denn ich habe das so noch
+nicht erlebt und jedes Kind muss halt seine eigene Erfahrung sammeln auch wenn es schon über 50 ist.</p>
+</div>
+<div class="paragraph">
+<p>Hier mal eine Skizze wie ich mir das System vorgestellt habe:</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="inhalte-2"><a class="anchor" href="#inhalte-2"></a>4.4. Inhalte</h3>
+<div class="paragraph">
+<p>Nur zum Verständnis hier noch einen kurzen Einschub was ich speicherte und wo und dann wie konkret ich meine Backups durchführte.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="./images/Verzeichnisliste.png" alt="Verzeichnisliste" title="Verzeichnisliste"></span></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ablage-sync</dt>
+<dd>
+<p>Dinge wie eingesannte Verträge von Stromversorgern oder Betriebskostenabrechnungen etc.</p>
+</dd>
+<dt class="hdlist1">ahnen-sync</dt>
+<dd>
+<p>Urkunden und Nachweise meiner Vorfahren zum Zwecke der Ahnenforschung.</p>
+</dd>
+<dt class="hdlist1">backup-sync</dt>
+<dd>
+<p>Zwischenspeicher für Backups</p>
+</dd>
+<dt class="hdlist1">books-sync</dt>
+<dd>
+<p>calibre Bibliothek</p>
+</dd>
+<dt class="hdlist1">dev-sync</dt>
+<dd>
+<p>bare clone der github repos + sicherungen spezieller software die man nicht mehr bekommt.</p>
+</dd>
+<dt class="hdlist1">filme-sync</dt>
+<dd>
+<p>Kopien gekaufter Filme und Downloads von youtube Videos</p>
+</dd>
+<dt class="hdlist1">foto-sync</dt>
+<dd>
+<p>Meine Fotos - ganz wenige, da ich generell flickr als meinen master nutze</p>
+</dd>
+<dt class="hdlist1">freiebilder-sync</dt>
+<dd>
+<p>Diverse erstellt Diagramme oder Bilder für Entwicklungsprojekte oder Präsentationen</p>
+</dd>
+<dt class="hdlist1">gramps-sync</dt>
+<dd>
+<p>Sicherung eines Stammbaumes (nicht mehr aktiv in Arbeit)</p>
+</dd>
+<dt class="hdlist1">input-sync</dt>
+<dd>
+<p>Input Kanal von allen Geräte zur Bearbeitung eingereicht: also TODO Kanal</p>
+</dd>
+<dt class="hdlist1">käufe</dt>
+<dd>
+<p>Diverse gekaufte Dinge wie amazon mp3 Lieder etc.</p>
+</dd>
+<dt class="hdlist1">lieder-sync</dt>
+<dd>
+<p>Entwicklungsprojekte mit Noten, midi etc.</p>
+</dd>
+<dt class="hdlist1">lizenzen-sync</dt>
+<dd>
+<p>Kopien meiner erworbenen Lizenzen</p>
+</dd>
+<dt class="hdlist1">music-sync</dt>
+<dd>
+<p>audio-expert Bibliothek</p>
+</dd>
+<dt class="hdlist1">musikvideos-sync</dt>
+<dd>
+<p>youtube Videos von alten Songs der 80er als die Videos gerade aufkamen.</p>
+</dd>
+<dt class="hdlist1">raspi-sync</dt>
+<dd>
+<p>Images für den raspi</p>
+</dd>
+<dt class="hdlist1">sylvia-ablage-sync</dt>
+<dd>
+<p>Familie</p>
+</dd>
+<dt class="hdlist1">sylvia-input</dt>
+<dd>
+<p>Familie</p>
+</dd>
+<dt class="hdlist1">tsc-private-sync</dt>
+<dd>
+<p>private Drafts und Schreibübungen etc.</p>
+</dd>
+<dt class="hdlist1">vm-images</dt>
+<dd>
+<p>virtual box images, mit os lizenzen die bezahlt wurden und daher aufgehobenn werden</p>
+</dd>
+<dt class="hdlist1">zugänge-sync</dt>
+<dd>
+<p>Zertifikate aller Art für den Zugriff auf andere Rechner oder Portale</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Auf den mobilen Endgeräten wie Handy oder Tablet habe ich dann meist nur music-sync und input-sync drauf. So kann ich meine Musik auf ein mobiles Device syncen und dort offline abspielen. Hier kommt mir eine Eigenschaft von resilio sync zu Gute: mobile Geräte unterstützen selektives syncen, beim Desktop braucht man eine entsprechende Lizenz dafür.</p>
+</div>
+<div class="paragraph">
+<p>Auf einem Laptop hatte ich dann zunächst die Musik verwaltet mit audio-expert. Da liegt die ganze Musik dann komplett im Verzeichnis des Laptops. Das nimmt viel Platz ein. Beim nächsten Laptop kam dann noch das Bücherverzeichnis von calibre hinzu. Wenn ich jetzt noch Filme und Videos drauf verwalten wollte dann benötigt es so viel Platz, dass es nicht mehr auf einen Laptop passt. Daher war die Idee ein Laptop für Musik verwalten, ein Laptop für Bücher verwalten. Dann aber hast Du den Laptop für Bücher in der Hand und kaufst bei amazon spontan Musik und schon geht die musik in den input-sync und irgendwann erst setzt Du dich hin und kopierst die Dateien. Das war jedenfalls nicht praktisch.</p>
+</div>
+<div class="paragraph">
+<p>Mein Wunsch für die Zukunft wäre auch noch alle Filme und Videos mit Plex oder Jellyfin verwalten zu können.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="backupkonzept-2"><a class="anchor" href="#backupkonzept-2"></a>4.5. Backupkonzept</h3>
 <div class="paragraph">
 <p>Mein Backup bestand darin, nach individuellem Gefühl mal ein Backup von der Musik, den Videos, den Ahnen oder sonstigem zu ziehen. Man hat ja so in etwa im Gefühl wo im letzten Monat was dazu gekommen ist. Gepeichert habe ich es immer auf externen USB Festplatten. Je Thema eine Platte - damit ist klar, dass da einiges an Platten zusammen kam und der Überblick wieder genauso schnell weg war wie vor dem Ganzen.</p>
 </div>
