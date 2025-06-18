@@ -448,8 +448,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#quellen">Quellen</a></li>
 <li><a href="#motivation">Motivation</a></li>
 <li><a href="#konzept">Konzept</a></li>
-<li><a href="#inhalte">Inhalte</a></li>
-<li><a href="#backupkonzept">Backupkonzept</a></li>
+<li><a href="#grundlagen-unraid">Grundlagen Unraid</a></li>
+<li><a href="#erfahrungen-mit-dem-pool">Erfahrungen mit dem Pool</a></li>
+<li><a href="#erfahrungen-mit-dem-array-der-parity-check">Erfahrungen mit dem Array - der Parity Check</a></li>
 </ul>
 </li>
 </ul>
@@ -520,120 +521,133 @@ nicht erlebt und jedes Kind muss halt seine eigene Erfahrung sammeln auch wenn e
 <div class="paragraph">
 <p>Hier mal eine Skizze wie ich mir das System vorgestellt habe:</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="inhalte"><a class="anchor" href="#inhalte"></a>Inhalte</h3>
 <div class="paragraph">
-<p>Nur zum Verständnis hier noch einen kurzen Einschub was ich speicherte und wo und dann wie konkret ich meine Backups durchführte.</p>
+<p><span class="image"><img src="./images/HomeserverVariante2.svg" alt="HomeserverVariante2"></span></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="./images/Verzeichnisliste.png" alt="Verzeichnisliste" title="Verzeichnisliste"></span></p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">ablage-sync</dt>
-<dd>
-<p>Dinge wie eingesannte Verträge von Stromversorgern oder Betriebskostenabrechnungen etc.</p>
-</dd>
-<dt class="hdlist1">ahnen-sync</dt>
-<dd>
-<p>Urkunden und Nachweise meiner Vorfahren zum Zwecke der Ahnenforschung.</p>
-</dd>
-<dt class="hdlist1">backup-sync</dt>
-<dd>
-<p>Zwischenspeicher für Backups</p>
-</dd>
-<dt class="hdlist1">books-sync</dt>
-<dd>
-<p>calibre Bibliothek</p>
-</dd>
-<dt class="hdlist1">dev-sync</dt>
-<dd>
-<p>bare clone der github repos + sicherungen spezieller software die man nicht mehr bekommt.</p>
-</dd>
-<dt class="hdlist1">filme-sync</dt>
-<dd>
-<p>Kopien gekaufter Filme und Downloads von youtube Videos</p>
-</dd>
-<dt class="hdlist1">foto-sync</dt>
-<dd>
-<p>Meine Fotos - ganz wenige, da ich generell flickr als meinen master nutze</p>
-</dd>
-<dt class="hdlist1">freiebilder-sync</dt>
-<dd>
-<p>Diverse erstellt Diagramme oder Bilder für Entwicklungsprojekte oder Präsentationen</p>
-</dd>
-<dt class="hdlist1">gramps-sync</dt>
-<dd>
-<p>Sicherung eines Stammbaumes (nicht mehr aktiv in Arbeit)</p>
-</dd>
-<dt class="hdlist1">input-sync</dt>
-<dd>
-<p>Input Kanal von allen Geräte zur Bearbeitung eingereicht: also TODO Kanal</p>
-</dd>
-<dt class="hdlist1">käufe</dt>
-<dd>
-<p>Diverse gekaufte Dinge wie amazon mp3 Lieder etc.</p>
-</dd>
-<dt class="hdlist1">lieder-sync</dt>
-<dd>
-<p>Entwicklungsprojekte mit Noten, midi etc.</p>
-</dd>
-<dt class="hdlist1">lizenzen-sync</dt>
-<dd>
-<p>Kopien meiner erworbenen Lizenzen</p>
-</dd>
-<dt class="hdlist1">music-sync</dt>
-<dd>
-<p>audio-expert Bibliothek</p>
-</dd>
-<dt class="hdlist1">musikvideos-sync</dt>
-<dd>
-<p>youtube Videos von alten Songs der 80er als die Videos gerade aufkamen.</p>
-</dd>
-<dt class="hdlist1">raspi-sync</dt>
-<dd>
-<p>Images für den raspi</p>
-</dd>
-<dt class="hdlist1">sylvia-ablage-sync</dt>
-<dd>
-<p>Familie</p>
-</dd>
-<dt class="hdlist1">sylvia-input</dt>
-<dd>
-<p>Familie</p>
-</dd>
-<dt class="hdlist1">tsc-private-sync</dt>
-<dd>
-<p>private Drafts und Schreibübungen etc.</p>
-</dd>
-<dt class="hdlist1">vm-images</dt>
-<dd>
-<p>virtual box images, mit os lizenzen die bezahlt wurden und daher aufgehobenn werden</p>
-</dd>
-<dt class="hdlist1">zugänge-sync</dt>
-<dd>
-<p>Zertifikate aller Art für den Zugriff auf andere Rechner oder Portale</p>
-</dd>
-</dl>
+<p>Auf dem Handy wäre resilio-sync als App installiert und es sollte also das music-sync Verzeichnis dort abliegen. Es sollte nur selektiv synchronisiert werden. Das bedeutet, wenn ich eine Datei antippe wird sie synchronisiert und liegt im Dateisystem des Handies vor. Das ist unabdingbar notwendig, da die Synchronisation des kompletten Ordners der Songs, Hörbücher, Klassik etc. enthält, viel zu groß für das Handy wäre.</p>
 </div>
 <div class="paragraph">
-<p>Auf den mobilen Endgeräten wie Handy oder Tablet habe ich dann meist nur music-sync und input-sync drauf. So kann ich meine Musik auf ein mobiles Device syncen und dort offline abspielen. Hier kommt mir eine Eigenschaft von resilio sync zu Gute: mobile Geräte unterstützen selektives syncen, beim Desktop braucht man eine entsprechende Lizenz dafür.</p>
+<p>Auf dem Laptop würde auch resilio-sync laufen und es wären die Ordner music-sync und
+books-sync in der Synchronisation eingeschlossen. Das books-sync Verzeichnis wäre die Ablage der calibre Bibliothek und das music-sync Verzeichnis wäre die Ablage der audio-expert Bibliothek. Für Musik und Bücher ist also der Laptop der Eingangskanal über diese beiden Programme.
+Weiterhin würde über den windows explorer das Share des Homeservers eingebunden werden, somit könnte ich über das Dateisystem des Laptops auch Dokumente und andere Daten direkt auf den Datenbestand des Homeservers schreiben.</p>
 </div>
 <div class="paragraph">
-<p>Auf einem Laptop hatte ich dann zunächst die Musik verwaltet mit audio-expert. Da liegt die ganze Musik dann komplett im Verzeichnis des Laptops. Das nimmt viel Platz ein. Beim nächsten Laptop kam dann noch das Bücherverzeichnis von calibre hinzu. Wenn ich jetzt noch Filme und Videos drauf verwalten wollte dann benötigt es so viel Platz, dass es nicht mehr auf einen Laptop passt. Daher war die Idee ein Laptop für Musik verwalten, ein Laptop für Bücher verwalten. Dann aber hast Du den Laptop für Bücher in der Hand und kaufst bei amazon spontan Musik und schon geht die musik in den input-sync und irgendwann erst setzt Du dich hin und kopierst die Dateien. Das war jedenfalls nicht praktisch.</p>
-</div>
-<div class="paragraph">
-<p>Mein Wunsch für die Zukunft wäre auch noch alle Filme und Videos mit Plex oder Jellyfin verwalten zu können.</p>
+<p>Soweit zum Konzept, nachfolgend nun zu den Erfahrungen und Anpassungen.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="backupkonzept"><a class="anchor" href="#backupkonzept"></a>Backupkonzept</h3>
+<h3 id="grundlagen-unraid"><a class="anchor" href="#grundlagen-unraid"></a>Grundlagen Unraid</h3>
 <div class="paragraph">
-<p>Mein Backup bestand darin, nach individuellem Gefühl mal ein Backup von der Musik, den Videos, den Ahnen oder sonstigem zu ziehen. Man hat ja so in etwa im Gefühl wo im letzten Monat was dazu gekommen ist. Gepeichert habe ich es immer auf externen USB Festplatten. Je Thema eine Platte - damit ist klar, dass da einiges an Platten zusammen kam und der Überblick wieder genauso schnell weg war wie vor dem Ganzen.</p>
+<p>Hier kurz zum Verständnis wie ich glaube, dass unraid funktioniert.
+Zunächst muss man einen USB Stick mit einem unraid Image bespielen. Dabei gibt es die
+erste Hürde, der USB Stick braucht eine GUID (Globally Unique Identfier). Bis dato
+wußte ich nicht einmal, dass es sowas gibt. Nun aber durfte ich auch lernen, dass
+nicht jeder USB Stick eine besitzt. Wo keine GUID drauf ist, lässt sich das unraid
+Image mit dem Installer nicht installieren. Ich vermute, das die GUID notwendig ist
+um die einzelnen Lizenzen registrieren und zuordnen zu können. Ist aber nur geraten.</p>
 </div>
 <div class="paragraph">
-<p>Daher suchte ich nach anderen Lösungen und ging in Richtung homeserver.</p>
+<p>Ist das unraid Image einmal auf dem USB Stick aufgespielt, muss man den PC noch dazu
+bringen von USB zu booten und dann kann es losgehen.</p>
+</div>
+<div class="paragraph">
+<p>Bei unraid gibt es zwei Möglichkeiten Festplatten zu einer verwalteten Gruppe zu
+verbinden:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Man ordnet die Festplatten einem Array zu - das wäre dann die erste Gruppe.</p>
+</li>
+<li>
+<p>Man ordnet die Festplatten einem Pool zu - das wäre dann die zweite Gruppe.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Eventuell kann man auch mehrere Pools anlegen, womit dann evtl. weitere Gruppen
+gebildet werden können.</p>
+</div>
+<div class="paragraph">
+<p>Die Funktion eines Array scheint einfach zu sein. Man kann viele Festplatten zu einem Storage zusammenfassen auf dem dann Daten gespeichert werden können. Man kennt dies auch unter dem Begriff JBOD (Just a Bunch of Disks).
+Die Daten werden von unraid in Foldern abgelegt wie man das wünscht und nach irgendwelchen Regeln dann irgendwann
+aufgesplittet und über die Platten verteilt. Der Witz bzw. das Hauptfeature eines Array ist jedoch die Eigenschaft,
+dass es sich über 1-2 Paritätsplatten absichern lässt. Das ist hier die Verbesserung gegenüber dem Raspi mit einer Platte.
+So kann eine Platte kaputt gehen. Dann zieht man diese raus und steckt eine neue rein, wartet die Erstellung aus der
+Parität ab und hat wieder ein funktionierendes System. Das war das Feature was mich überzeugt hatte.</p>
+</div>
+<div class="paragraph">
+<p>Die Funktion eines Pools ist unklar. Früher hießen die Pools wohl cache und sind wohl auch für so etwas gedacht. Ich
+habe es so verstanden. Man kann Platten zu einem Cache zusammenschließen. Diese können nicht über eine Paritätsplatte
+gesichert werden. Für einen Pool verwendet man wohl kleinere Platten als im Array und vorwiegend SSDs, weil die schön
+schnell sind. Dann konfiguriert man unraid so, dass die Daten in einen Pool geschrieben und gelesen werden. Damit können
+sich alle Platten im Array schlafen legen, da ja nur auf den Ppol zugegriffen wird. Irgendwann läuft dann ein
+sogenannter Mover an, welcher die Aufgabe hat die Daten zwischen Pool und Array hin und her zu kopieren.
+In der Theorie würde man also den ganzen Tag über Daten in den Pool schreiben und auch lesen und irgendwann Nachts,
+würde der Mover die Daten des Pools mit dem des Arrays in Sync bringen. Wann und wie und nach welchen Vorschriften -
+keine Ahnung. Die Doku ist in Englisch und wenn ich Dinge exakt wissen muss - hilft mir Englisch nix.</p>
+</div>
+<div class="paragraph">
+<p>In wieweit ein Ppol gegen Plattenschäden oder fehlerhafte Sektoren gesichert ist, ist unklar. Einige Quellen sagen
+er wäre sicher aber nicht 100%ig - dann weiß ich aber nicht was dann sicher sein soll. Sektorenschäden können
+vermutlich die von unraid verwendeten Filsysteme selbständig kompensieren. Eine defekte Platte im Pool bedeutet bestimmt
+Datenverlust.</p>
+</div>
+<div class="paragraph">
+<p>Jetzt ein Wort zu den Shares. Bei unraid lassen sich Shares definieren. Ist sowas wie man es vom Samba Share her
+kennt. Erscheint als Ablage im Netzwerk. Jedem Share lassen sich Platten zuordnen, die es nutzen soll. In dem Share
+kann man dann seine eigene Ordnerstruktur anlegen. Und hier weiß ich halt nicht wie genau die dann beim größer werden
+über die zugeordneten Platten verteilt und gesplittet wird. Die Shares können als Freigaben mit Rechten für einzelne
+Nutzer versehen werden.</p>
+</div>
+<div class="paragraph">
+<p>Auch lassen sich VMs und Plugins in unraid verwalten. Mit VMs habe ich nix versucht, weil mein ThinClient viel zu
+schwach dafür wäre. Mit Plugins habe ich mich beschäftigt, da man in der Regel gar nicht ohne auskommt.</p>
+</div>
+<div class="paragraph">
+<p>Ganz wichtig noch: Unraid sagt, dir Parität ist kein Ersatz für ein Backup. Du bist also auch weiterhin dafür
+verantwortlich von den in unraid gespeicherten Daten ein Backup zu erstellen. Zu beachten ist, dass Du nun nicht mehr
+nur von Deinen eigenen Daten ein Backup brauchst, sondern auch noch von der ganzen unraid Konfiguration - das ist
+teilweise nicht trivial.</p>
+</div>
+<div class="paragraph">
+<p>Kommen wir jetzt mal auf die Apps und Plugins zu sprechen. Das sind praktisch von der Community entwickelte Feature auf der
+Basis von Docker Container. Da geht unraid also keine Haftung und keine Arbeit mit ein. Trotzdem kommt man nicht ohne
+aus - was eigentlich schon frech ist.</p>
+</div>
+<div class="paragraph">
+<p>Damit man überhaupt Plugins oder Apps installieren und verwalten kann, benötigt man das Community Application Plugin.
+Da ist unraid als Maintainer eingetragen. Ist es installiert, können weitere Apps
+installiert werden und je nachdem wie diese Apps gestrickt sind, erscheinen sie unter Plugins oder unter Docker Container
+oder unter beidem.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="erfahrungen-mit-dem-pool"><a class="anchor" href="#erfahrungen-mit-dem-pool"></a>Erfahrungen mit dem Pool</h3>
+<div class="paragraph">
+<p>Beim ersten Versuch hab ich einen Pool und ein Array eingerichtet. Der Pool bestand aus 2 Platten und beim ersten
+initialen Befüllen der Verzeichnisse durch einfaches Kopieren aufs Share bekam ich sofort ständig die Warnung
+"Die Platte ist gleich voll". Natürlich war die Platte bei weitem nicht voll und es scheint auch nix verloren gegangen
+zu sein aber es hat mich tiersich verwirrt. Weil meine gebrauchten ThinClients auch noch beim esten Check eine Platte
+mit Defekten aufwies habe ich mich langfristig gegen einen Pool entschieden. Nachdem ich anfangs auch den ganzen Tag
+am System konfiguriert hatte und ständig Dinge hin und her kopiert habe und neu gestartet etc. Hatte ich es auch
+recht schnell geschrottet und habe dann keinen Pool mehr konfiguriert.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="erfahrungen-mit-dem-array-der-parity-check"><a class="anchor" href="#erfahrungen-mit-dem-array-der-parity-check"></a>Erfahrungen mit dem Array - der Parity Check</h3>
+<div class="paragraph">
+<p>Mein erstes Array bestand aus etwa 4 Platten, mit denen ich dann ein bischen rumspielte. Da lief sofort ein Parity
+Check los, den wollte ich lieber nicht unterbrechen und so ging es erst nach 24h weiter mit ausprobieren. Ein Parity
+Check wird von unraid andauernd angestoßen wenn am Array was geändert wird und dabei wird jedes Mal die Parity Platte
+mit massenweisen Schreib- und Lesezugriffen gestresst. Solange man am Konfigurieren ist, kann man den getrost skippen
+und später wenn alles konfiguriert ist, einmal komplett laufen lassen. Der Sicherheit halber lasse ich meinen 1x die
+Woche wieder laufen. Das war für mich ein Kompromiss zu der Frage: Ist es schlimmer eine Weile nicht zu merken, dass
+eine Platte kaputt ist oder ist es schlimmer ständig einen Parity Check durchzuführen und dadurch die Platte schneller
+kaputt zu machen? Wie gesagt, der Check läuft bei mir mindestens 12h. Dabei erhitzt sich die Platte teilweise stark.
+Unraid scheint dann runter zu regeln und die Platte kühlt wieder ein wenig ab. Damit sie kurz darauf wieder eine
+Hitzewarnung erzeugt.</p>
 </div>
 <div class="ulist">
 <ul>
