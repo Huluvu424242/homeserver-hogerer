@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.16">
-<title>Variante 1 mit Raspi</title>
+<title>Variante 2 mit einem Thin Client</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -443,8 +443,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#variante-1-mit-raspi">Variante 1 mit Raspi</a>
+<li><a href="#variante-2-mit-einem-thin-client">Variante 2 mit einem Thin Client</a>
 <ul class="sectlevel2">
+<li><a href="#quellen">Quellen</a></li>
+<li><a href="#motivation">Motivation</a></li>
 <li><a href="#konzept">Konzept</a></li>
 <li><a href="#inhalte">Inhalte</a></li>
 <li><a href="#backupkonzept">Backupkonzept</a></li>
@@ -455,18 +457,68 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="variante-1-mit-raspi"><a class="anchor" href="#variante-1-mit-raspi"></a>Variante 1 mit Raspi</h2>
+<h2 id="variante-2-mit-einem-thin-client"><a class="anchor" href="#variante-2-mit-einem-thin-client"></a>Variante 2 mit einem Thin Client</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="quellen"><a class="anchor" href="#quellen"></a>Quellen</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://youtu.be/K10bMgX0qoc?si=zRTbArzBR66EMsTl">Gebrauchte Thin-Clients im Test</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=OOHszBodhbc">Ich hab mir einen lautlosen Mini-Homeserver gebaut</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="motivation"><a class="anchor" href="#motivation"></a>Motivation</h3>
+<div class="paragraph">
+<p>Nachdem ich erst lange keinen Raspi mehr bekam, weil sie einfach nicht zu haben waren und dann mir lange keinen mehr
+leisten konnte, weil sie plötzlich so teuer waren, dass ich nicht mehr bereit war das Geld dafür auszugeben, hab ich
+nach Alternativen gesucht.</p>
+</div>
+<div class="paragraph">
+<p>So kam ich zum oben verlinkten Artikel von ct3003 über Thin-Clients. Dort hieß es der Dell Wyse 5070 und der HP T620
+würden sich auch als Homeserver mit ubuntu und plex eignen und wären auch ein guter raspi Ersatz. Den älteren HP sollte
+man wohl für 30 Euro bekommen und den Dell für etwa 90 Euro. Spoiler: Der Dell ist leistungstärker als der HP aber
+vergiss die Kombination unraid/plex oder unraid/jellyfin auf dem Teil.</p>
+</div>
+</div>
 <div class="sect2">
 <h3 id="konzept"><a class="anchor" href="#konzept"></a>Konzept</h3>
 <div class="paragraph">
-<p>Die Idee war einfach. Nachdem ich einige Versuche mit resilio Sync unternommen hatte ein paar Verzeichnisse zwischen meinen Laptops, Handies und Tablets zu synchronisieren, wollte ich einen "Master" Server haben gegen den alle Geräte synchronisiert werden.</p>
+<p>Was wollte ich? Einen Homeserver, auf dem ich alles sicher ablegen kann und mit dem ich auch Shares im eigenen Heimnetz
+freigeben kann und zu dem ich auch einfach per vpn vom Handy unterwegs ran komme.</p>
 </div>
 <div class="paragraph">
-<p>Der Server brauchte nicht viel Leistung, denn die Synchronisation konnte ja wie bisher direkt zwischen den Geräten erfolgen und er selbst konnte gern langsam alle Änderungen nachziehen. Wichtig war nur wo der korrekte und vollständige Datenbestand zum Schluss liegen sollte - nämlich beim "Master"-Server. Für resiliosync hatte ich eine einfache Lizenz gekauft und zu der Technologie hatte ich Vertrauen,da das bittorrent Protokoll genutzt wurde und es entweder eine Art Nachfolger war oder die Leute welche die Software bereistellten auch schon bittorrent erdacht hatten.</p>
+<p>Was hab ich genommen? Den Dell Wyse 5070 Thin Client als Homeserver mit unraid.</p>
 </div>
 <div class="paragraph">
-<p>Da keine große Leistung nötig war, suchte ich kurz ob es mit einem Raspi geht und ja es gab schon Lösungen also frisch ans Werk. Raspi aufgesetzt, resilio instaliert und USB Platte dran und fertig. Die Kombi lief über Jahre stabil und ich war zufrieden. Eigentlich hätte ich nix ändern müssen aber mir war nicht klar wie sicher bzw. Auffwändig meine Backupstrategie war. Immer wenn ich dachte, zog ich von der raspi Platte ein Backup und legte es auf einer anderen externen USB Platte ab. Das war auf jeden Fall nicht die sicherste Art. Letztlich war das Backup der Punkt weshalb ich immer am überlegen war, wie ich das sicherer gestalten kann.</p>
+<p>Was war der Kompromis? Das Teil hat einen Lüfter und stört beim Schlafen. Braucht also Platz auf dem Balkon, aber dafür
+spare ich hunderte Euros im Vergleich zur Quelle mit dem lautlosen Mini-Homeserver von AliExpress. Er ist
+leisstungsstärker als ein Raspi 4 aber nicht stark genug für die Verwaltung und das Streamen von Videos.</p>
+</div>
+<div class="paragraph">
+<p>Wie funktioniert das Ganze? Also den Zugriff per vpn vom Handy ins Heimnetz hatte ich zufällig schon über meine FritzBox
+mittels wireguard gelöst. Blieb noch die sichere Speicherung der Daten. Das war der Grund warum ich unraid nahm. Nicht
+so teuer wie ein echtes Raid System aber durch die Parität auf jeden Fall sicherer als ein Raspi mit einer Platte.</p>
+</div>
+<div class="paragraph">
+<p>Wichtig: Unraid empfielt ausschließlich S-ATA Platten einzusetzen. Mein Konzept sah aber ausschließlich den Einsatz von
+mobilen USB Festplatten ohne eigene Stromversorgung vor. Ein solcher Einsatz ist unter Profis hochumstritten!? Nein,
+nicht wirklich - Profis sagen ganz klar - ist nicht ok ein solcher Einsatz. Hintergrund ist wohl: mobile USB Platten
+sind nicht dafür gedacht die ganze Zeit zu drehen und wollen sich irgendwann schlafen legen. Wenn sie aber gerade
+schlafen und unraid will was drauf schreiben, kann das zu Datenverlusten führen, weil nicht alles geschrieben wird.</p>
+</div>
+<div class="paragraph">
+<p>Warum das Verhalten so ist, in Zeiten von Resilience und bekannten Pattern wie retry, weiß ich nicht aber ich glaube das
+den Profis einfach mal ohne es groß zu hinterfragen. Und wie immer mache ich es trotzdem, denn ich habe das so noch
+nicht erlebt und jedes Kind muss halt seine eigene Erfahrung sammeln auch wenn es schon über 50 ist.</p>
+</div>
+<div class="paragraph">
+<p>Hier mal eine Skizze wie ich mir das System vorgestellt habe:</p>
 </div>
 </div>
 <div class="sect2">
