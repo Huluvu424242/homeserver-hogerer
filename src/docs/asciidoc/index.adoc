@@ -28,6 +28,8 @@ include::01-vorwort.adoc[]
 
 include::02-raspi.adoc[]
 
+include::03-thinclient.adoc[]
+
 
 
 // ## Metadaten
