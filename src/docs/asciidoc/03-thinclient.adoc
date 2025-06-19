@@ -1,0 +1,150 @@
+:imagesdir: ./images
+
+== Variante 2 mit einem Thin Client
+
+=== Quellen
+
+* https://youtu.be/K10bMgX0qoc?si=zRTbArzBR66EMsTl[Gebrauchte Thin-Clients im Test]
+* https://www.youtube.com/watch?v=OOHszBodhbc[Ich hab mir einen lautlosen Mini-Homeserver gebaut]
+
+=== Motivation
+
+Nachdem ich erst lange keinen Raspi mehr bekam, weil sie einfach nicht zu haben waren und dann mir lange keinen mehr
+leisten konnte, weil sie plötzlich so teuer waren, dass ich nicht mehr bereit war das Geld dafür auszugeben, hab ich
+nach Alternativen gesucht.
+
+So kam ich zum oben verlinkten Artikel von ct3003 über Thin-Clients. Dort hieß es der Dell Wyse 5070 und der HP T620
+würden sich auch als Homeserver mit ubuntu und plex eignen und wären auch ein guter raspi Ersatz. Den älteren HP sollte
+man wohl für 30 Euro bekommen und den Dell für etwa 90 Euro. Spoiler: Der Dell ist leistungstärker als der HP aber
+vergiss die Kombination unraid/plex oder unraid/jellyfin auf dem Teil.
+
+=== Konzept
+
+Was wollte ich? Einen Homeserver, auf dem ich alles sicher ablegen kann und mit dem ich auch Shares im eigenen Heimnetz
+freigeben kann und zu dem ich auch einfach per vpn vom Handy unterwegs ran komme.
+
+Was hab ich genommen? Den Dell Wyse 5070 Thin Client als Homeserver mit unraid.
+
+Was war der Kompromis? Das Teil hat einen Lüfter und stört beim Schlafen. Braucht also Platz auf dem Balkon, aber dafür
+spare ich hunderte Euros im Vergleich zur Quelle mit dem lautlosen Mini-Homeserver von AliExpress. Er ist
+leisstungsstärker als ein Raspi 4 aber nicht stark genug für die Verwaltung und das Streamen von Videos.
+
+Wie funktioniert das Ganze? Also den Zugriff per vpn vom Handy ins Heimnetz hatte ich zufällig schon über meine FritzBox
+mittels wireguard gelöst. Blieb noch die sichere Speicherung der Daten. Das war der Grund warum ich unraid nahm. Nicht
+so teuer wie ein echtes Raid System aber durch die Parität auf jeden Fall sicherer als ein Raspi mit einer Platte.
+
+Wichtig: Unraid empfielt ausschließlich S-ATA Platten einzusetzen. Mein Konzept sah aber ausschließlich den Einsatz von
+mobilen USB Festplatten ohne eigene Stromversorgung vor. Ein solcher Einsatz ist unter Profis hochumstritten!? Nein,
+nicht wirklich - Profis sagen ganz klar - ist nicht ok ein solcher Einsatz. Hintergrund ist wohl: mobile USB Platten
+sind nicht dafür gedacht die ganze Zeit zu drehen und wollen sich irgendwann schlafen legen. Wenn sie aber gerade
+schlafen und unraid will was drauf schreiben, kann das zu Datenverlusten führen, weil nicht alles geschrieben wird.
+
+Warum das Verhalten so ist, in Zeiten von Resilience und bekannten Pattern wie retry, weiß ich nicht aber ich glaube das
+den Profis einfach mal ohne es groß zu hinterfragen. Und wie immer mache ich es trotzdem, denn ich habe das so noch
+nicht erlebt und jedes Kind muss halt seine eigene Erfahrung sammeln auch wenn es schon über 50 ist.
+
+Hier mal eine Skizze wie ich mir das System vorgestellt habe:
+
+image:HomeserverVariante2.svg[]
+
+Auf dem Handy wäre resilio-sync als App installiert und es sollte also das music-sync Verzeichnis dort abliegen. Es sollte nur selektiv synchronisiert werden. Das bedeutet, wenn ich eine Datei antippe wird sie synchronisiert und liegt im Dateisystem des Handies vor. Das ist unabdingbar notwendig, da die Synchronisation des kompletten Ordners der Songs, Hörbücher, Klassik etc. enthält, viel zu groß für das Handy wäre.
+
+Auf dem Laptop würde auch resilio-sync laufen und es wären die Ordner music-sync und
+books-sync in der Synchronisation eingeschlossen. Das books-sync Verzeichnis wäre die Ablage der calibre Bibliothek und das music-sync Verzeichnis wäre die Ablage der audio-expert Bibliothek. Für Musik und Bücher ist also der Laptop der Eingangskanal über diese beiden Programme.
+Weiterhin würde über den windows explorer das Share des Homeservers eingebunden werden, somit könnte ich über das Dateisystem des Laptops auch Dokumente und andere Daten direkt auf den Datenbestand des Homeservers schreiben.
+
+Soweit zum Konzept, nachfolgend nun zu den Erfahrungen und Anpassungen.
+
+=== Grundlagen Unraid
+
+Hier kurz zum Verständnis wie ich glaube, dass unraid funktioniert.
+Zunächst muss man einen USB Stick mit einem unraid Image bespielen. Dabei gibt es die
+erste Hürde, der USB Stick braucht eine GUID (Globally Unique Identfier). Bis dato
+wußte ich nicht einmal, dass es sowas gibt. Nun aber durfte ich auch lernen, dass
+nicht jeder USB Stick eine besitzt. Wo keine GUID drauf ist, lässt sich das unraid
+Image mit dem Installer nicht installieren. Ich vermute, das die GUID notwendig ist
+um die einzelnen Lizenzen registrieren und zuordnen zu können. Ist aber nur geraten.
+
+Ist das unraid Image einmal auf dem USB Stick aufgespielt, muss man den PC noch dazu
+bringen von USB zu booten und dann kann es losgehen.
+
+Bei unraid gibt es zwei Möglichkeiten Festplatten zu einer verwalteten Gruppe zu
+verbinden:
+
+1. Man ordnet die Festplatten einem Array zu - das wäre dann die erste Gruppe.
+2. Man ordnet die Festplatten einem Pool zu - das wäre dann die zweite Gruppe.
+
+Eventuell kann man auch mehrere Pools anlegen, womit dann evtl. weitere Gruppen
+gebildet werden können.
+
+Die Funktion eines Array scheint einfach zu sein. Man kann viele Festplatten zu einem Storage zusammenfassen auf dem dann Daten gespeichert werden können. Man kennt dies auch unter dem Begriff JBOD (Just a Bunch of Disks).
+Die Daten werden von unraid in Foldern abgelegt wie man das wünscht und nach irgendwelchen Regeln dann irgendwann
+aufgesplittet und über die Platten verteilt. Der Witz bzw. das Hauptfeature eines Array ist jedoch die Eigenschaft,
+dass es sich über 1-2 Paritätsplatten absichern lässt. Das ist hier die Verbesserung gegenüber dem Raspi mit einer Platte.
+So kann eine Platte kaputt gehen. Dann zieht man diese raus und steckt eine neue rein, wartet die Erstellung aus der
+Parität ab und hat wieder ein funktionierendes System. Das war das Feature was mich überzeugt hatte.
+
+Die Funktion eines Pools ist unklar. Früher hießen die Pools wohl cache und sind wohl auch für so etwas gedacht. Ich
+habe es so verstanden. Man kann Platten zu einem Cache zusammenschließen. Diese können nicht über eine Paritätsplatte
+gesichert werden. Für einen Pool verwendet man wohl kleinere Platten als im Array und vorwiegend SSDs, weil die schön
+schnell sind. Dann konfiguriert man unraid so, dass die Daten in einen Pool geschrieben und gelesen werden. Damit können
+sich alle Platten im Array schlafen legen, da ja nur auf den Ppol zugegriffen wird. Irgendwann läuft dann ein
+sogenannter Mover an, welcher die Aufgabe hat die Daten zwischen Pool und Array hin und her zu kopieren.
+In der Theorie würde man also den ganzen Tag über Daten in den Pool schreiben und auch lesen und irgendwann Nachts,
+würde der Mover die Daten des Pools mit dem des Arrays in Sync bringen. Wann und wie und nach welchen Vorschriften -
+keine Ahnung. Die Doku ist in Englisch und wenn ich Dinge exakt wissen muss - hilft mir Englisch nix.
+
+In wieweit ein Ppol gegen Plattenschäden oder fehlerhafte Sektoren gesichert ist, ist unklar. Einige Quellen sagen
+er wäre sicher aber nicht 100%ig - dann weiß ich aber nicht was dann sicher sein soll. Sektorenschäden können
+vermutlich die von unraid verwendeten Filsysteme selbständig kompensieren. Eine defekte Platte im Pool bedeutet bestimmt
+Datenverlust.
+
+Jetzt ein Wort zu den Shares. Bei unraid lassen sich Shares definieren. Ist sowas wie man es vom Samba Share her
+kennt. Erscheint als Ablage im Netzwerk. Jedem Share lassen sich Platten zuordnen, die es nutzen soll. In dem Share
+kann man dann seine eigene Ordnerstruktur anlegen. Und hier weiß ich halt nicht wie genau die dann beim größer werden
+über die zugeordneten Platten verteilt und gesplittet wird. Die Shares können als Freigaben mit Rechten für einzelne
+Nutzer versehen werden.
+
+Auch lassen sich VMs und Plugins in unraid verwalten. Mit VMs habe ich nix versucht, weil mein ThinClient viel zu
+schwach dafür wäre. Mit Plugins habe ich mich beschäftigt, da man in der Regel gar nicht ohne auskommt.
+
+Ganz wichtig noch: Unraid sagt, dir Parität ist kein Ersatz für ein Backup. Du bist also auch weiterhin dafür
+verantwortlich von den in unraid gespeicherten Daten ein Backup zu erstellen. Zu beachten ist, dass Du nun nicht mehr
+nur von Deinen eigenen Daten ein Backup brauchst, sondern auch noch von der ganzen unraid Konfiguration - das ist
+teilweise nicht trivial.
+
+Kommen wir jetzt mal auf die Apps und Plugins zu sprechen. Das sind praktisch von der Community entwickelte Feature auf der
+Basis von Docker Container. Da geht unraid also keine Haftung und keine Arbeit mit ein. Trotzdem kommt man nicht ohne
+aus - was eigentlich schon frech ist.
+
+Damit man überhaupt Plugins oder Apps installieren und verwalten kann, benötigt man das Community Application Plugin.
+Da ist unraid als Maintainer eingetragen. Ist es installiert, können weitere Apps
+installiert werden und je nachdem wie diese Apps gestrickt sind, erscheinen sie unter Plugins oder unter Docker Container
+oder unter beidem.
+
+=== Erfahrungen mit dem Pool
+
+Beim ersten Versuch hab ich einen Pool und ein Array eingerichtet. Der Pool bestand aus 2 Platten und beim ersten
+initialen Befüllen der Verzeichnisse durch einfaches Kopieren aufs Share bekam ich sofort ständig die Warnung
+"Die Platte ist gleich voll". Natürlich war die Platte bei weitem nicht voll und es scheint auch nix verloren gegangen
+zu sein aber es hat mich tiersich verwirrt. Weil meine gebrauchten ThinClients auch noch beim esten Check eine Platte
+mit Defekten aufwies habe ich mich langfristig gegen einen Pool entschieden. Nachdem ich anfangs auch den ganzen Tag
+am System konfiguriert hatte und ständig Dinge hin und her kopiert habe und neu gestartet etc. Hatte ich es auch
+recht schnell geschrottet und habe dann keinen Pool mehr konfiguriert.
+
+=== Erfahrungen mit dem Array - der Parity Check
+
+Mein erstes Array bestand aus etwa 4 Platten, mit denen ich dann ein bischen rumspielte. Da lief sofort ein Parity
+Check los, den wollte ich lieber nicht unterbrechen und so ging es erst nach 24h weiter mit ausprobieren. Ein Parity
+Check wird von unraid andauernd angestoßen wenn am Array was geändert wird und dabei wird jedes Mal die Parity Platte
+mit massenweisen Schreib- und Lesezugriffen gestresst. Solange man am Konfigurieren ist, kann man den getrost skippen
+und später wenn alles konfiguriert ist, einmal komplett laufen lassen. Der Sicherheit halber lasse ich meinen 1x die
+Woche wieder laufen. Das war für mich ein Kompromiss zu der Frage: Ist es schlimmer eine Weile nicht zu merken, dass
+eine Platte kaputt ist oder ist es schlimmer ständig einen Parity Check durchzuführen und dadurch die Platte schneller
+kaputt zu machen? Wie gesagt, der Check läuft bei mir mindestens 12h. Dabei erhitzt sich die Platte teilweise stark.
+Unraid scheint dann runter zu regeln und die Platte kühlt wieder ein wenig ab. Damit sie kurz darauf wieder eine
+Hitzewarnung erzeugt.
+
+
+
+* xref:index.adoc[Zurück zur Übersicht]
