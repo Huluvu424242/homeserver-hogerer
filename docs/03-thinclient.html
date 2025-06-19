@@ -451,6 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#grundlagen-unraid">Grundlagen Unraid</a></li>
 <li><a href="#erfahrungen-mit-dem-pool">Erfahrungen mit dem Pool</a></li>
 <li><a href="#erfahrungen-mit-dem-array-der-parity-check">Erfahrungen mit dem Array - der Parity Check</a></li>
+<li><a href="#erfahrungen-mit-den-docker-apps">Erfahrungen mit den Docker Apps</a></li>
 </ul>
 </li>
 </ul>
@@ -649,6 +650,85 @@ kaputt zu machen? Wie gesagt, der Check läuft bei mir mindestens 12h. Dabei erh
 Unraid scheint dann runter zu regeln und die Platte kühlt wieder ein wenig ab. Damit sie kurz darauf wieder eine
 Hitzewarnung erzeugt.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="erfahrungen-mit-den-docker-apps"><a class="anchor" href="#erfahrungen-mit-den-docker-apps"></a>Erfahrungen mit den Docker Apps</h3>
+<div class="paragraph">
+<p>Die Docker Apps werden von der Community bereitgestellt. Eine App scheint nach einem ersten Blick nur 2 Dinge für
+Ihre Bereitstellung zu benötigen, ein Image für einen ausführbaren Docker Container sprich ein Dockerfile
+und ein XML File für die Konfiguration von Default Werten und deren Anpassbarkeit durch den Nutzer.</p>
+</div>
+<div class="paragraph">
+<p>Bei der Installation werden uns dann die Felder welche im XML File definiert wurden angezeigt, so dass wir deren Werte
+überschreiben bzw. anpassen können. In der Regel sind das Ports oder Pfade und Namen. Bei Pfaden kann man auch beliebige
+vorher definierte Shares eintragen. Die Auswahl ist sehr gut gelöst - wenn man erstmal das ungewöhnliche UX Konzept
+der Nutzeroberfläche halbwegs begriffen hat.</p>
+</div>
+<div class="paragraph">
+<p>Bei den Pfaden möchte ich auf ein wichtiges Detail hinweisen. Alle Docker Apps werden im System unter
+/mnt/user/appdata/&lt;id der app&gt; abgelegt. Sprich dort liegen die Konfigurationen in einem Unterverzeichnis und die echten
+Daten in einem anderen Unterverzeichnis. Die Daten der Shares bzw. Netzwerkfreigaben liegen hingegen unter
+/mnt/user/&lt;name des share&gt; Der Ordner /mnt/user/appdata ist selbst auch ein Standard Share von unraid, welches aber
+nach aussen für das Netz per Default nicht freigegeben ist aber freigegeben werden kann.  Für jedes Share lassen sich
+wie oben erwähnt Rechte auf angelegte Nutzer defnieren. Die Granularität entspricht dem chmod Rechten von Linux. Also
+owner, gruppe, other mit schreiben, lesen, ausführen. Das ganze Konstrukt schafft reichlich Komplexität die ich an meinem
+Praxisbeispiel kurz beschreiben möchte.</p>
+</div>
+<div class="paragraph">
+<p>Zunächst habe ich das Community Plugin (keine Docker App) installiert um überhaupt Docker Apps und andere Plugins
+installieren zu können (Also mein Array hatte ich schon angelegt und in Betrieb, der Parity Check war auch durch).</p>
+</div>
+<div class="paragraph">
+<p>Jetzt konnte ich die Resilio Docker App installieren. Hierbei hatte ich mehrere "Hersteller" zur Auswahl. Zunächst hatte
+ich binhex benutzt, bin dann aber später zu linuxserver gewechselt und habe irgendwann auch mal die Version von MAC-CS
+probiert. Wie auch immer man kann jedenfalls immer den Ordner angeben unter dem die ganzen Folder angelegt werden
+sollen welche zu synchronisieren sind. Wenn man hier kein Share angibt landet der Ordner automatisch irgendwo unter
+/mnt/user/appdate/Resilio Sync/sync/folders Das schöne Leerzeichen kommt durch die Default Konfiguration beim App Namen.
+Darum merke - App Namen sinnvollerweise gleich immer klein schreiben und zusammen ohne Leerzeichen.</p>
+</div>
+<div class="paragraph">
+<p>Jetzt kann man sich noch einen Nutzer anlegen und das appdata Share für diesen freigeben. public ist bei Windows schlecht
+das kann Probleme geben. Darum habe ich die Freigabe private für den Nutzer durchgeführt und natürlich read/write weil
+der Nutzer sollte ja von Windows aus Dateien unter den synchronisierten Ordnern von Resilio einbringen und auch löschen
+können. Um es kurz zu machen - Pustekuchen - mir war es nicht möglich dort irgendwie vom Windows her
+schreibend drauf zu zugreifen. Und ja ich kenne mich ausreichend mit Samba, Linux Rechten, Windows Tresor etc. aus.
+Zumindest haben meine Kenntnisse beim Raspi 4 für die gleiche Aufgabe ausgereicht.</p>
+</div>
+<div class="paragraph">
+<p>Nach sehr vielen Versuchen habe ich dann ein eigenes Share ablage erstellt. Dieses wird unter /mnt/user/ablage
+eingehängt und ich kann die Rechte beliebig anpassen. Bei der Reinstallation von Resilio habe ich dieses Share dann als
+Sync Path eingegeben und nun war es möglich von Windows darauf schreibend zuzugreifen. Manchmal kam es bei Sync Zugriffen
+dazu, dass die Permissions geändert wurden und der Zugriff dann in Teilen nicht mehr ging. Dies konnte aber stets schnell
+behoben werden, durch chmod per Oberfläche und dann hatte ich das Problem nicht mehr. Vermutlich nur eine Folge der vielen
+Versuche gewesen.</p>
+</div>
+<div class="paragraph">
+<p>Jetzt könnte man denke supi alles gut. Natürlich nicht, denn eigentlich wollte ich ja gar kein eigenes Share sondern alles
+sollte unter appdata liegen. Das hat Gründe in meinem geplanten Backup.
+Es gibt ein paar coole Plugins und eins nennt sich Appdata Backup. Das macht genau was der Name sagt es erstellt ein
+Backup vom appdata Verzeichnis, also von allen Daten der Docker Apps. Solange die Apps keine eigenen Shares nutzen
+liegen sowohl ihre Konfiguration als auch ihre Daten unter appdata und werden vom Backup schon weggesichert. Nutzt man
+aber ein eigenes Share, dann liegen die Daten unter dem Share also unter /mnt/user/&lt;name des shares&gt; und werden damit
+nicht weggesichert. Wenn man das so will ist das ok aber ich wollte das nicht so. Darum gibt es auch später auch
+noch eine Variante 3.</p>
+</div>
+<div class="paragraph">
+<p>Also das Plugin Appdata Backup bietet wirklich gute Optionen. Für meinen Fall beispielsweise konfiguriere ich es wie
+folgt. 1. Stoppe alle Docker Container in einer vorgegebenen Reihenfolge 2. Sichere den appdata Ordner komplett
+3. Starte die Docker Container in reverser Reihenfolge 4. Sichere das Flash Image vom USB Stick separat.
+Das Flash Image scheint mir in sofern sinnvoll, da dort auch teilweise Konfigurationen festgeschrieben werden.</p>
+</div>
+<div class="paragraph">
+<p>Mein Backup von allen Daten läuft 12 h von daher habe ich strikte Zeitvorgaben wann was vom System durchzuführen ist.
+Das Appdata Backup Plugin unterstützt meine Wünsche indem es mir eine cron Konfiguration für das Backup anbietet und
+auch die Ausführung von Shell Skripten vor oder nach bestimmten Schritten erlaubt.</p>
+</div>
+<div class="paragraph">
+<p>Soweit vielleicht der Stand mit Variante 2.
+Wir erinnern uns, mit Variante 3 müssen wir nun versuchen auch die Resilio Sync Daten zu sichern, welche ja unter
+/mnt/user/ablagen (mein Share heißt ablagen) liegen und hier bei Variante 2 nur mit eigenen Shell Skripten gesichert
+werden können.</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -663,7 +743,7 @@ Hitzewarnung erzeugt.</p>
 <div id="footer">
 <div id="footer-text">
 Version Ausgabe 1.0.0-SNAPSHOT<br>
-Last updated 18.06.2025 
+Last updated 19.06.2025 
 </div>
 </div>
 </body>
