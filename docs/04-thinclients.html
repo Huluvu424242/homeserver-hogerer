@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.16">
-<title>Vorwort</title>
+<title>Variante 3 mit mehreren Thin Clients</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -443,29 +443,179 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#vorwort">Vorwort</a></li>
+<li><a href="#variante-3-mit-mehreren-thin-clients">Variante 3 mit mehreren Thin Clients</a>
+<ul class="sectlevel2">
+<li><a href="#quellen">Quellen</a></li>
+<li><a href="#konzept">Konzept</a></li>
+<li><a href="#erfahrungen-und-erweiterungen">Erfahrungen und Erweiterungen</a></li>
+<li><a href="#fazit-variante-3">Fazit Variante 3</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="vorwort"><a class="anchor" href="#vorwort"></a>Vorwort</h2>
+<h2 id="variante-3-mit-mehreren-thin-clients"><a class="anchor" href="#variante-3-mit-mehreren-thin-clients"></a>Variante 3 mit mehreren Thin Clients</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="quellen"><a class="anchor" href="#quellen"></a>Quellen</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://youtu.be/P8kj98KvLm4?si=NILAHTikgQDK9AVZ">Unraid Tipps für Starter</a></p>
+</li>
+<li>
+<p><a href="https://youtu.be/BJPNaJA7GFg?si=joNWnJkI6E8SMBDC">Unraid Konfiguration Datenträger ohne Array</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="konzept"><a class="anchor" href="#konzept"></a>Konzept</h3>
 <div class="paragraph">
-<p>Wie wohl jeder von uns habe ich in meinem Leben angefangen Daten anzuhäufen und wollte diese irgendwann endlich digitalisieren und ordnen.</p>
+<p>Nachdem ich mit Variante 2 gemerkt habe, dass es weiterhin Probleme mit dem Backup gibt und die Berechtigungen auf den Shares auch nicht so einfach zu verwalten waren, hab ich eine neue Variante 3 entworfen.</p>
 </div>
 <div class="paragraph">
-<p>Begonnen hat diese Odyssee mit diversen Raspberry PIs. Letzlich waren es so viele Dinge die ich mit PIs ausprobiert habe, dass es sich irgendwann gelohnt hat die <a href="https://huluvu424242.github.io/Raspi-Garage/">Raspi Garage</a> in Leben zu rufen.
-Aus dieser Zeit stammt Variante 1 = ein Raspi &amp; eine 6 TB Festplatte mit Resilio Sync drauf. War als Einstieg ganz gut, hat auch die ganzen Jahre funktioniert - war mir aber zu unsicher.</p>
+<p><span class="image"><img src="./images/HomeserverVariante3.svg" alt="HomeserverVariante3"></span></p>
 </div>
 <div class="paragraph">
-<p>Dann habe ich mich hingesetzt und gefragt wie machen das andere Menschen und bin auf den Begriff NAS gekommen. Da ich eine FritzBox hatte war ein NAS schnell realisiert. Diese Versuche werde ich hier aber gar nicht erst dokumentieren. Die Fritz Box ist ein klasse Router und dafür auch genau das Richtige. Aber als NAS taugt sie mir nicht. Da fehlt die Leistung und dann ging das bei mir auch nur mit WebDAV - das war total langsam. Also keine Option.</p>
+<p>Die grundlegende Änderung ist, dass ich nun 2 Server mit Resilio Sync bespiele aber jeweils verschieden konfiguriert.</p>
 </div>
 <div class="paragraph">
-<p>Dann habe ich was gelesen von Homeserver statt NAS und schaute neugierig darauf was eigentlich ein Homeserver ist. OK, für die meisten ist ein Homeserver wohl ein teures Gerät mit vielen teuren Festplatten und komplizierter Storagetechnik, genannt RAID irgendwas, und als ich die Preise sah war mir klar, hier bin ich falsch. Allerdings bin ich mir da inzwischen nicht mehr ganz so sicher, denn bei unraid habe ich inzwischen 3 Server und davon 2 mit lifetime Lizenz und einen mit Basic Lizenz. Wenn also die Systeme von Synologie, QNap oder UGreen genommen hätte, hätte ich vermutlich ein besseres System bekommen als jetzt aber das weiß ich nicht, da ich nicht vergleichen kann ohne diese Systeme mal getestet zu haben. Dann gibt es ja auch noch Vertreter wie myCloud, ownCloud, TrueNAS, TerraMaster und Nextcloud. Es war mir einfach zu viel diese alle zu testen und so hab ich recherchiert und fand dieses Video von ct3003 <a href="https://www.youtube.com/watch?v=cB5n_cWJor8" class="external" target="_blank" rel="noopener">Du willst einen Homeserver (glaub mir)</a> und das hat mich leider überzeugt.</p>
+<p>Der Server den ich backupserver nenne, basiert auf einem Array ohne Pools und  besitzt nur eine Resilio Sync
+Installation. Die synchronisierten Folder stellen die Master Folder dar und liegen unter /mnt/user/appdata/resiliosync/sync/folders/. Sie sind damit auch Teil des Backups welches von Appdata Backup
+durchgeführt und auf einem eigenen Share abgelegt wird. Das Share kann von Windows nur als Read Only Share
+eingehangen werden. Damit können die einzelnen Backupstände auf mobile USB Festplatten kopiert werden. Verändert oder
+gelöscht werden können die Backups von Windows aus nicht. Darum kümmert sich Appdata Backup. Es löscht alle
+Backups die älter sind als 7 Tage, lässt aber die jüngsten 3 immer stehen egal wie alt diese sind.
+Das Backup ist auch so konfiguriert, dass zunächst alle Container gestoppt werden, dann das Backup erstellt wird und
+dann die Container wieder gestartet werden. Beim Herunterfahren wird eine evtl. laufende Synchronisation unterbrochen,
+so dass es nicht zu Inkonsistenzen kommt. Nachdem Backup, wird die Synchronisation dann wie gewohnt fortgesetzt.</p>
 </div>
 <div class="paragraph">
-<p>Heute würde ich meiner Naivität folgend, genauso blauäugig es mal mit UGreen probieren. Aber zunächst bin ich mal bei Unraid geblieben - auch weil ich da schon ne Menge Geld versenkt habe.</p>
+<p>Der Server den ich homeserver nenne, auf diesem konfiguriere ich den Pfad der synchronisierten Folder von Resilio
+auf ein eigens angelegtes Share (/mnt/user/ablagen). Windows Nutzer, können dieses Share Schreibend und Lesend
+einbinden und es ist nicht Teil der Backupläufe auf dem homeserver. Alle hier im Share liegenden Folder sind
+synchronisierte Folder vom Backupserver.
+Damit auch die Konfiguration des homeservers unter /mnt/user/appdata gesichert wird. Läuft auch hier Appdata Backup.
+Das Backup stopped auch zunächst alle Container, führt dann das Backup durch und startet dann die Container wieder.
+Die gesicherten Daten selbst schreibt das Backupprogramm in einen Unterordner des synchronisierten Folders backup-sync
+auf dem von Resiolio benutzten und freigegebenen Share. Die Konfiguration des Backup funktioniert wie beim
+backupserver: Alles über 7 Tage wird gelöscht außer die jüngsten 3.</p>
+</div>
+<div class="paragraph">
+<p>Für die Sicherheit meiner Daten reicht mir das zunächst bis hier her. Ich denke die Daten sind aktuell sicher und
+überleben auch einen Stromausfall bzw. haben einen solchen schon überlebt. Zu diesem Zwecke habe ich auf keinem
+Server einen Pool eingerichtet. Meinen neuestem Wissenstand nach könnte man dies aber sogar ausfallsicher hinbekommen.
+Aber das ist vielleicht noch ein Punkt für die Zukunft.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="erfahrungen-und-erweiterungen"><a class="anchor" href="#erfahrungen-und-erweiterungen"></a>Erfahrungen und Erweiterungen</h3>
+<div class="paragraph">
+<p>Da ich nach einer Weile die Datensicherheit für gut befand und ich meine Passwörter immer noch mit
+Keypass sicherte und hier schon längst eine bessere Lösung suchte, stellte ich mir noch einen vaultserver hin.
+Auf dem vaultserver habe ich eine vaultwarden Instanz eingerichtet, auf die ich per Browserplugin zugreifen kann.
+Alle Daten liegen unter /mnt/home/appdata/vaultwarden. Das Backup des Server führe ich wieder mit Appdata Backup
+durch. Wie immer werden erst alle Container gestoppt, dann die Daten gesichert und dann die Container wieder
+gestartet. Die gesicherten Daten werden auf ein eigens erstelltes Share abgelegt. Es werden nur die jüngsten 3 Backups und alles was jünger als 7 Tage ist nicht gelöscht.</p>
+</div>
+<div class="paragraph">
+<p>Diese gesicherten Daten sollten natürlich auch Teil des großen übergeordneten "Master" Backups auf dem backupserver
+werden. Sie sollen dort in einen parallellen Ordner zu den Daten der homeserver Konfiguration gesichert werden. Ich muss sie also irgendwie zum backupserver übertragen. Das könnte ich über ein Remote Share welches ich in unraid
+einhängen kann machen. Aber wenn es Netzwerkprobleme beim Transport gibt, scheitert das Backup. Außerdem muss der
+Zielrechner an sein und eine asynchrone Speicherung wäre nicht möglich. Daher habe ich mich gegen das einhängen
+eines Remote Shares vom backupserver entschieden. Stattdessen habe ich auch hier Resilio Sync installiert und das
+genutzte Backupshare als synchronisierten Folder Pfad angegeben. Schon war das Problem gelöst. Jetzt kann der
+Transport der Daten asynchron immer dann passieren, wenn es gerade möglich ist.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="fazit-variante-3"><a class="anchor" href="#fazit-variante-3"></a>Fazit Variante 3</h3>
+<div class="paragraph">
+<p>Was ziehe ich für ein Fazit? Bin ich zufrieder mit der Lösung?
+Allgemein bin ich sehr zufrieden aber es gibt immer wieder Punkte über die ich nachdenke und bei denen ich meine,
+sie weiter verbessern zu müssen.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Jedes Backup ist nur so gut wie sein Restore. Darum habe ich mir einen Laptop geschnappt das Backupverzeichnis
+eingehangen und versucht das aktuelle Backup zu entpacken. Remote geht nicht. Erst lokal kopieren - ok dann wird der
+Platz auf der Platte schon extrem eng. Jetzt entpacken - zu wenig Platz auf dem gesamten Laptop. Öffnen und einen
+bestimmten Ordner später zum Entpacken selektieren wollen - dauert ewig beim Öffnen und scheitert dann mit zu wenig
+Platz (vermutlich wird hier einfach auch erst komplett auf Platte entpackt). Also separate mobile USB Platte
+rangestöpselt, das Backup drauf kopiert und dort entpackt - voila geht. Ich komme an alle Daten ran und könnte diese
+wieder einspielen. Das ist verbesserungswürdig - wie weiß ich noch nicht. Aber Daten wie jpeg oder mp4, die schon
+gepackt sind brauchen nicht nochmal gepackt werden. Das riesen Zip hab ich eigentlich nur, damit der Tranport übers
+Netz schneller geht und bei einem FAT Zielsystem mir nicht gleich tausende Pfadwarnungen ala "zu lang" um die Ohren fliegen. Wenn das dann beim Entpacken passieren sollte, hab ich die Durststrecke Netzwerk schon mal hinter mir und kann weiter kopieren auf eine andere Platte mit ntfs oder so. Ziel ist vielleicht statt zip ein tar zu erstellen, mal schauen ob das mit Appdata Backup machbar ist.</p>
+</li>
+<li>
+<p>Das Aufsetzen einer vaultwarden Instanz auf einem weiteren Thin Client aus einem Backup, hab ich ausprobiert nach Anleitung im Netz und hat super funktioniert.</p>
+</li>
+<li>
+<p>Die Server sind sehr schwach und besitzen Lüfter, machen also leise Geräusche.
+Der HP T620 geht gerade noch als vaultserver, den würde ich
+aber zukünftig nicht wieder kaufen - viel zu schwach. Eine Lösung aus 3 Wyse wäre gut gewesen. Trotzdem ohne
+Lüfter und mehr Speicher wäre auch cool.</p>
+</li>
+<li>
+<p>Mir fehlt immer noch eine Lösung für jellyfin - da brauch ich aber einen leistungsstarken Server. Mal
+schauen und sparen.</p>
+</li>
+<li>
+<p>Ich verwende nur USB Platten und habe beobachtet, dass die bei mir durchlaufen. Die legen sich nie schlafen
+obgleich da nur an einigen Tagen was zu tun ist. Da muss ich die Konfiguration nochmal prüfen. Andererseits,
+habe ich dadurch auch vielleicht bisher nicht die Probleme vor die alle Welt immer warnt. Es heißt immer, nimm
+keine USB Platten. Unraid leistet auch keinen Support sowie USB Platten im Spiel sind. Außerdem scheint der
+Unraid Support den Satz "Kein Backup, kein Mitleid" sehr ernst zu nehmen.</p>
+</li>
+<li>
+<p>Ich würde zukünftig ger mal mehr mit einem Pool rumspielen. Zumal ich jetzt verstanden habe, dass man den
+mit zfs wohl ausfallsicher hinbekommt.</p>
+</li>
+<li>
+<p>Ich habe eine strikte Zeitvorgabe eingerichtet für automatische Tasks. Backup Homeserver 00:15 Montags,
+Backup vaultserver 00:15 Dienstags.  Backup backupserver 00:15 Donnerstag. Damit ist das WE Backupfrei und
+ich kann ungehindert basteln.</p>
+</li>
+<li>
+<p>Backup und Perity Check. Zwischen einem Backup und einem Parity Check lasse ich bisher immer mindestens 48 h.
+Die beiden Dinge dauern teilweise extrem lange und ich möchte nicht, dass beide Prozesse zufällig zeitgleich laufen.</p>
+</li>
+<li>
+<p>Die Parity Platten werden bei unraid am meisten belastet, gleichzeitig sind das auch die teuersten weil am
+größten und idealwerweise auch am schnellsten. Immer ein Auge drauf halten und beim Ausfall schnell wechseln.
+Bei mir leben sie aber noch alle.</p>
+</li>
+<li>
+<p>Ein Wort zu Updates und Upgrades. Ich habe das Backup so eingestellt, dass es automatisch vor dem Starten der Container noch Updates einspielt. Diese Updates beziehen sich aber nur auf die Docker Apps. Die Plugins
+spiele ich selber ein. Hier warte ich immer erst eine Woche ab und dann spiele ich sie ein. Bisher keine
+Probleme. Das Upgrade von unraid ist ein wichtiger Punkt. Dazu nehme ich mir Zeit. Das Teil lasse ich
+mindestens eine Woche veröffentlicht sein und dann lese ich die Release Logs auch ganz genau. Meine Erfahrung
+sagt mir das ist wichtig. Von 6.5 auf 7.0 hatte ich was falsch gemacht und das Upgrade hatte sich aufgehangen.
+Neu booten hat geholfen aber das ist riskant. Lieber exakt nach Anweisung vorgehen.</p>
+</li>
+<li>
+<p>Platten wechseln. Geht unproblematisch sofern die neue Platte gleich groß oder gößer ist. Danach läuft der
+Parity Check wieder los und veruscht den Inhalt der neuen Platte aus der Parität herzustellen.</p>
+</li>
+<li>
+<p>Eine Platte die ich aus einem Array entfernt hatte weil ich sie an meinem Laptop anstecken wollte und mal kurz alle Daten kopieren wollte (direkt per USB und nicht übers Netz) lies sich nicht lesen. Die Platten werden
+von Windows gar nicht erkannt. Als ob sie nicht formatiert sind. Ich habe eine Weile gebraucht um zu schnallen,
+dass das am Filesystem liegt, für das mein Windows vermutlich keine Treiber installiert hat. Unter unraid konnte
+ich die Platte wieder super auslesen. Für solche Sachen hilft übrigens das Unassigned Device Plugin.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="index.html">Zurück zur Übersicht</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 </div>
