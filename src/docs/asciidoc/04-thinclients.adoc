@@ -4,7 +4,7 @@
 
 === Quellen
 
-* https://youtu.be/P8kj98KvLm4?si=NILAHTikgQDK9AVZ[Unraid Tipps für Starter}
+* https://youtu.be/P8kj98KvLm4?si=NILAHTikgQDK9AVZ[Unraid Tipps für Starter]
 * https://youtu.be/BJPNaJA7GFg?si=joNWnJkI6E8SMBDC[Unraid Konfiguration Datenträger ohne Array]
 
 === Motivation
