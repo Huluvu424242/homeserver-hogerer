@@ -1,0 +1,12 @@
+:imagesdir: ./images
+
+== Variante 3 mit mehreren Thin Clients
+
+=== Quellen
+
+* https://youtu.be/P8kj98KvLm4?si=NILAHTikgQDK9AVZ[Unraid Tipps für Starter}
+* https://youtu.be/BJPNaJA7GFg?si=joNWnJkI6E8SMBDC[Unraid Konfiguration Datenträger ohne Array]
+
+=== Motivation
+TODO
+* xref:index.adoc[Zurück zur Übersicht]
