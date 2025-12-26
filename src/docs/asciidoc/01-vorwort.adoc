@@ -1,8 +1,8 @@
 ==  Vorwort
 
-Wie wohl jeder von uns habe ich in meinem Leben angefangen Daten anzuhäufen und wollte diese irgendwann endlich digitalisieren und ordnen.
+Wie wohl jeder von uns habe ich irgendwann in meinem Leben angefangen Daten anzuhäufen und wollte diese irgendwann endlich digitalisieren und ordnen. Also wird irgendein Storage System mit Festplatten benötigt und eine Methode (Full oder Delta) Backups zu erstellen.
 
-Begonnen hat diese Odyssee mit diversen Raspberry PIs. Letzlich waren es so viele Dinge die ich mit PIs ausprobiert habe, dass es sich irgendwann gelohnt hat die link:https://huluvu424242.github.io/Raspi-Garage/[Raspi Garage] in Leben zu rufen.
+Begonnen habe ich diese Odyssee mit diversen Raspberry PIs. Letzlich waren es so viele Dinge die ich mit PIs ausprobiert habe, dass es sich irgendwann gelohnt hat die link:https://huluvu424242.github.io/Raspi-Garage/[Raspi Garage] in Leben zu rufen.
 Aus dieser Zeit stammt Variante 1 = ein Raspi & eine 6 TB Festplatte mit Resilio Sync drauf. War als Einstieg ganz gut, hat auch die ganzen Jahre funktioniert - war mir aber zu unsicher.
 
 Dann habe ich mich hingesetzt und gefragt wie machen das andere Menschen und bin auf den Begriff NAS gekommen. Da ich eine FritzBox hatte war ein NAS schnell realisiert. Diese Versuche werde ich hier aber gar nicht erst dokumentieren. Die Fritz Box ist ein klasse Router und dafür auch genau das Richtige. Aber als NAS taugt sie mir nicht. Da fehlt die Leistung und dann ging das bei mir auch nur mit WebDAV - das war total langsam. Also keine Option.
