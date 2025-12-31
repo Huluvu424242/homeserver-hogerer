@@ -484,9 +484,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#motivation-2">6.1. Motivation</a></li>
 <li><a href="#konzept-4">6.2. Konzept</a></li>
-<li><a href="#1-self-signed-zertifikat-lokale-root-ca-installieren">6.3. 1. Self-Signed-Zertifikat + lokale Root-CA installieren</a></li>
-<li><a href="#2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge">6.4. 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)</a></li>
-<li><a href="#3-traefik-oder-caddy-als-interner-proxy-interne-ca">6.5. 3. Traefik oder Caddy als interner Proxy + interne CA</a></li>
 </ul>
 </li>
 </ul>
@@ -1149,9 +1146,8 @@ um das HTTPS-Protokoll zu unterstützen.</p>
 <div class="paragraph">
 <p>Aus meiner Sicht gibt es drei Lösungsmöglichkeiten:</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="1-self-signed-zertifikat-lokale-root-ca-installieren"><a class="anchor" href="#1-self-signed-zertifikat-lokale-root-ca-installieren"></a>6.3. 1. Self-Signed-Zertifikat + lokale Root-CA installieren</h3>
+<div class="sect3">
+<h4 id="1-self-signed-zertifikat-lokale-root-ca-installieren"><a class="anchor" href="#1-self-signed-zertifikat-lokale-root-ca-installieren"></a>6.2.1. 1. Self-Signed-Zertifikat + lokale Root-CA installieren</h4>
 <div class="paragraph">
 <p><em>(die sicherste und sauberste Lösung im Heimnetz)</em></p>
 </div>
@@ -1278,8 +1274,8 @@ In den Bitwarden-Plugin-Einstellungen:</p>
 </ul>
 </div>
 </div>
-<div class="sect2">
-<h3 id="2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"><a class="anchor" href="#2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"></a>6.4. 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)</h3>
+<div class="sect3">
+<h4 id="2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"><a class="anchor" href="#2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"></a>6.2.2. 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)</h4>
 <div class="paragraph">
 <p><em>(die Profi-Lösung mit „echten“ Zertifikaten ohne öffentliche IP)</em></p>
 </div>
@@ -1350,8 +1346,8 @@ In den Bitwarden-Plugin-Einstellungen:</p>
 </ul>
 </div>
 </div>
-<div class="sect2">
-<h3 id="3-traefik-oder-caddy-als-interner-proxy-interne-ca"><a class="anchor" href="#3-traefik-oder-caddy-als-interner-proxy-interne-ca"></a>6.5. 3. Traefik oder Caddy als interner Proxy + interne CA</h3>
+<div class="sect3">
+<h4 id="3-traefik-oder-caddy-als-interner-proxy-interne-ca"><a class="anchor" href="#3-traefik-oder-caddy-als-interner-proxy-interne-ca"></a>6.2.3. 3. Traefik oder Caddy als interner Proxy + interne CA</h4>
 <div class="paragraph">
 <p><em>(ideal bei mehreren internen Diensten)</em></p>
 </div>
@@ -1395,6 +1391,7 @@ In den Bitwarden-Plugin-Einstellungen:</p>
 <p><a href="#">Zurück zur Übersicht</a></p>
 </li>
 </ul>
+</div>
 </div>
 </div>
 </div>
