@@ -27,21 +27,21 @@ _(die sicherste und sauberste Lösung im Heimnetz)_
 [source,shell]
 ----
 mkcert -install
-mkcert vaultwarden.local 192.168.178.50
+mkcert vaultwarden.lan 192.168.178.50
 ----
 
   ➜ erzeugt:
 
-  * Zertifikat: `vaultwarden.local.pem`
-  * Key: `vaultwarden.local-key.pem`
+  * Zertifikat: `vaultwarden.lan.pem`
+  * Key: `vaultwarden.lan-key.pem`
   * Root-CA im Betriebssystem installiert
 
 . FritzBox DNS-Rebind anpassen
   Lege den Hostnamen intern fest:
 
   * FritzBox → *Heimnetz* → *Netzwerk*
-  * Deinem Unraid-Server einen Namen geben, z. B. `unraid.local`
-  * Falls `.local` Probleme macht, alternativ `.lan` verwenden (`unraid.lan`)
+  * Deinem Unraid-Server einen Namen geben, z. B. `unraid.lan`
+  * Falls `.lan` Probleme macht, alternativ `.lan` verwenden (`unraid.lan`)
 
 . Vaultwarden-Container mit Zertifikaten starten
   Im Unraid-Docker-Template:
@@ -49,7 +49,7 @@ mkcert vaultwarden.local 192.168.178.50
 [source]
 ----
 WEB_VAULT_ENABLED=true
-ROCKET_TLS={certs="/data/vaultwarden.local.pem",key="/data/vaultwarden.local-key.pem"}
+ROCKET_TLS={certs="/data/vaultwarden.lan.pem",key="/data/vaultwarden.lan-key.pem"}
 ----
 
   Die Zertifikate vorher nach
@@ -59,7 +59,7 @@ ROCKET_TLS={certs="/data/vaultwarden.local.pem",key="/data/vaultwarden.local-key
   In den Bitwarden-Plugin-Einstellungen:
 
   * „Selbstsigniertes Zertifikat zulassen“
-  * URL setzen auf `https://vaultwarden.local`
+  * URL setzen auf `https://vaultwarden.lan`
 
 .Vorteile
 * Funktioniert offline, ohne Cloud
@@ -100,7 +100,7 @@ _(die Profi-Lösung mit „echten“ Zertifikaten ohne öffentliche IP)_
 _(ideal bei mehreren internen Diensten)_
 
 * Caddy- oder Traefik-Container installieren
-* Dienst `vaultwarden.local` als Backend konfigurieren
+* Dienst `vaultwarden.lan` als Backend konfigurieren
 * Caddy kann automatisch interne Zertifikate erzeugen
 * Interne CA im Browser-Plugin importieren
 
