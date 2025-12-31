@@ -480,12 +480,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#fazit-variante-3">5.4. Fazit Variante 3</a></li>
 </ul>
 </li>
-<li><a href="#ssl-konfiguration-für-vaultwarden">6. SSL Konfiguration für Vaultwarden</a>
+<li><a href="#ssl-konfiguration-für-vaultwarden">6. SSL-Konfiguration für Vaultwarden</a>
 <ul class="sectlevel2">
 <li><a href="#motivation-2">6.1. Motivation</a></li>
 <li><a href="#konzept-4">6.2. Konzept</a></li>
-<li><a href="#erfahrungen-und-erweiterungen-2">6.3. Erfahrungen und Erweiterungen</a></li>
-<li><a href="#fazit-variante-3-2">6.4. Fazit Variante 3</a></li>
+<li><a href="#1-self-signed-zertifikat-lokale-root-ca-installieren">6.3. 1. Self-Signed-Zertifikat + lokale Root-CA installieren</a></li>
+<li><a href="#2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge">6.4. 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)</a></li>
+<li><a href="#3-traefik-oder-caddy-als-interner-proxy-interne-ca">6.5. 3. Traefik oder Caddy als interner Proxy + interne CA</a></li>
 </ul>
 </li>
 </ul>
@@ -1132,306 +1133,268 @@ ich die Platte wieder super auslesen. Für solche Sachen hilft übrigens das Una
 </div>
 </div>
 <div class="sect1">
-<h2 id="ssl-konfiguration-für-vaultwarden"><a class="anchor" href="#ssl-konfiguration-für-vaultwarden"></a>6. SSL Konfiguration für Vaultwarden</h2>
+<h2 id="ssl-konfiguration-für-vaultwarden"><a class="anchor" href="#ssl-konfiguration-für-vaultwarden"></a>6. SSL-Konfiguration für Vaultwarden</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="motivation-2"><a class="anchor" href="#motivation-2"></a>6.1. Motivation</h3>
 <div class="paragraph">
-<p>Seit dem neusten Update des Bitwarden Browser Plugins, lassen sich nur noch verschlüsselte
-Verbindungen zum Vaultwarden Server herstellen. Damit muss dieser unbedingt über ein SSL
-Zertifikat verfügen um das HTTPS Protokoll zu unterstützen.</p>
+<p>Seit dem neuesten Update des Bitwarden-Browser-Plugins lassen sich nur noch
+verschlüsselte Verbindungen zum Vaultwarden-Server herstellen.
+Damit muss dieser zwingend über ein SSL-Zertifikat verfügen,
+um das HTTPS-Protokoll zu unterstützen.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="konzept-4"><a class="anchor" href="#konzept-4"></a>6.2. Konzept</h3>
 <div class="paragraph">
-<p>Aus meiner Sicht gibt es 3 Lösungsmöglichkeiten:</p>
+<p>Aus meiner Sicht gibt es drei Lösungsmöglichkeiten:</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="1-self-signed-zertifikat-lokale-root-ca-installieren"><a class="anchor" href="#1-self-signed-zertifikat-lokale-root-ca-installieren"></a>6.3. 1. Self-Signed-Zertifikat + lokale Root-CA installieren</h3>
+<div class="paragraph">
+<p><em>(die sicherste und sauberste Lösung im Heimnetz)</em></p>
 </div>
 <div class="olist arabic">
+<div class="title">Schritte</div>
 <ol class="arabic">
 <li>
-<p>Self-Signed Zertifikat + lokales Root-CA installieren</p>
+<p>Eigenes Root-CA erstellen
+Auf deinem PC oder direkt in Unraid kannst du eine Root-CA generieren,</p>
+<div class="olist loweralpha">
+<ol class="loweralpha">
+<li>
+<p>B. mit <strong>mkcert</strong> oder <strong>OpenSSL</strong>.</p>
 <div class="literalblock">
 <div class="content">
-<pre>(die sicherste und sauberste Lösung im Heimnetz)
-**Schritte**
-1. Eigenes Root-CA erstellen
-   Auf deinem PC oder direkt im Unraid kannst du eine Root-CA generieren, z. B. mit mkcert oder OpenSSL.
-   Beispiel mit mkcert (empfohlen):
-   ```
-   mkcert -install
-   mkcert vaultwarden.local 192.168.178.50
-   ```
-   ➜ erzeugt:
-  - Zertifikat: vaultwarden.local.pem
-  - Key: vaultwarden.local-key.pem
-  - Root-CA im Betriebssystem installiert</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Fritzbox DNS-Rebind anpassen
-Lege den Hostnamen intern fest:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>In der Fritzbox → Heimnetz → Netzwerk</p>
-</li>
-<li>
-<p>Deinem Unraid-Server einen Namen geben: z. B. unraid.local</p>
-</li>
-<li>
-<p>(Falls .local Probleme macht, .lan verwenden: unraid.lan)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Vaultwarden Container mit Zertifikaten starten
-In Unraid Docker Template:
-<code>`</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>WEB_VAULT_ENABLED=true</p>
-</li>
-<li>
-<p>ROCKET_TLS={certs="/data/vaultwarden.local.pem",key="/data/vaultwarden.local-key.pem"}
-<code>`</code>
-Zertifikate vorher in /mnt/user/appdata/vaultwarden/ speichern.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Im Browser Plugin Hintergrunddomain ändern
-In Bitwarden-Plugineinstellungen:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>"Selbstsigniertes Zertifikat zulassen"</p>
-</li>
-<li>
-<p>passende URL <a href="https://vaultwarden.local" class="bare">https://vaultwarden.local</a></p>
-<div class="literalblock">
-<div class="content">
-<pre>✔ Vorteile
-- Funktioniert offline, ohne Cloud.
-- Voll kompatibel mit Browser-Plugin.
-- Sicherheit wie bei professionellen internen Installationen.</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>✖ Nachteile
-- Du musst die Root-CA auf allen Geräten importieren (PC, Handy etc.)</pre>
-</div>
-</div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Lokale DNS-Domain + Reverse Proxy + Let&#8217;s Encrypt (DNS Challenge)</p>
-<div class="literalblock">
-<div class="content">
-<pre>(die Profi-Lösung mit "echten" Zertifikaten ohne öffentliche IP)
-**Benötigt**
-- Eine Domain (z. B. bei IONOS, Strato, Cloudflare)
-- Zugriff auf DNS
-**Schritte**
-1. Domain kaufen – Beispiel: schubert-home.de
-2. Subdomain: vaultwarden.schubert-home.de
-3. DNS Challenge konfigurieren (Cloudflare API oder IONOS API)
-4. In Unraid über SWAG oder Caddy Zertifikat automatisch generieren:
-  - SWAG (Let’s Encrypt container)
-  - oder Caddy (automatische Zertifikate via DNS-01)
-5. Reverse-Proxy leitet intern auf Vaultwarden weiter.</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>✔ Vorteile
-- Echte Let’s-Encrypt-Zertifikate
-- Automatische Erneuerung
-- Keine CA-Installation auf Clients nötig</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>✖ Nachteile
-- Domain kaufen
-- Einrichtung etwas komplex</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Traefik oder Caddy als interner Proxy + interne CA</p>
-<div class="literalblock">
-<div class="content">
-<pre>(ideal wenn mehrere interne Dienste betrieben werden)
-- Container caddy oder traefik installieren
-- Dienst "vaultwarden.local" als Backend konfigurieren
-- Caddy kann sogar automatisch interne Zertifikate erzeugen
-- Browser-Plugin -&gt; interne CA importieren</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>✔ Vorteile
-- Perfekt für Homeserver mit vielen Diensten
-- Caddy hat die eleganteste Konfiguration
-- Keine Zertifikate manuell herumkopieren</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>✖ Nachteile
-- Etwas Lernkurve</pre>
+<pre>Beispiel mit *mkcert* (empfohlen):</pre>
 </div>
 </div>
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="./images/HomeserverVariante3.svg" alt="HomeserverVariante3"></span></p>
+</li>
+</ol>
 </div>
-<div class="paragraph">
-<p>Die grundlegende Änderung ist, dass ich nun 2 Server mit Resilio Sync bespiele aber jeweils verschieden konfiguriert.</p>
-</div>
-<div class="paragraph">
-<p>Der Server den ich backupserver nenne, basiert auf einem Array ohne Pools und  besitzt nur eine Resilio Sync
-Installation. Die synchronisierten Folder stellen die Master Folder dar und liegen unter /mnt/user/appdata/resiliosync/sync/folders/. Sie sind damit auch Teil des Backups welches von Appdata Backup
-durchgeführt und auf einem eigenen Share abgelegt wird. Das Share kann von Windows nur als Read Only Share
-eingehangen werden. Damit können die einzelnen Backupstände auf mobile USB Festplatten kopiert werden. Verändert oder
-gelöscht werden können die Backups von Windows aus nicht. Darum kümmert sich Appdata Backup. Es löscht alle
-Backups die älter sind als 7 Tage, lässt aber die jüngsten 3 immer stehen egal wie alt diese sind.
-Das Backup ist auch so konfiguriert, dass zunächst alle Container gestoppt werden, dann das Backup erstellt wird und
-dann die Container wieder gestartet werden. Beim Herunterfahren wird eine evtl. laufende Synchronisation unterbrochen,
-so dass es nicht zu Inkonsistenzen kommt. Nachdem Backup, wird die Synchronisation dann wie gewohnt fortgesetzt.</p>
-</div>
-<div class="paragraph">
-<p>Der Server den ich homeserver nenne, auf diesem konfiguriere ich den Pfad der synchronisierten Folder von Resilio
-auf ein eigens angelegtes Share (/mnt/user/ablagen). Windows Nutzer, können dieses Share Schreibend und Lesend
-einbinden und es ist nicht Teil der Backupläufe auf dem homeserver. Alle hier im Share liegenden Folder sind
-synchronisierte Folder vom Backupserver.
-Damit auch die Konfiguration des homeservers unter /mnt/user/appdata gesichert wird. Läuft auch hier Appdata Backup.
-Das Backup stopped auch zunächst alle Container, führt dann das Backup durch und startet dann die Container wieder.
-Die gesicherten Daten selbst schreibt das Backupprogramm in einen Unterordner des synchronisierten Folders backup-sync
-auf dem von Resiolio benutzten und freigegebenen Share. Die Konfiguration des Backup funktioniert wie beim
-backupserver: Alles über 7 Tage wird gelöscht außer die jüngsten 3.</p>
-</div>
-<div class="paragraph">
-<p>Für die Sicherheit meiner Daten reicht mir das zunächst bis hier her. Ich denke die Daten sind aktuell sicher und
-überleben auch einen Stromausfall bzw. haben einen solchen schon überlebt. Zu diesem Zwecke habe ich auf keinem
-Server einen Pool eingerichtet. Meinen neuestem Wissenstand nach könnte man dies aber sogar ausfallsicher hinbekommen.
-Aber das ist vielleicht noch ein Punkt für die Zukunft.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">mkcert -install
+mkcert vaultwarden.local 192.168.178.50</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="erfahrungen-und-erweiterungen-2"><a class="anchor" href="#erfahrungen-und-erweiterungen-2"></a>6.3. Erfahrungen und Erweiterungen</h3>
-<div class="paragraph">
-<p>Da ich nach einer Weile die Datensicherheit für gut befand und ich meine Passwörter immer noch mit
-Keypass sicherte und hier schon längst eine bessere Lösung suchte, stellte ich mir noch einen vaultserver hin.
-Auf dem vaultserver habe ich eine vaultwarden Instanz eingerichtet, auf die ich per Browserplugin zugreifen kann.
-Alle Daten liegen unter /mnt/home/appdata/vaultwarden. Das Backup des Server führe ich wieder mit Appdata Backup
-durch. Wie immer werden erst alle Container gestoppt, dann die Daten gesichert und dann die Container wieder
-gestartet. Die gesicherten Daten werden auf ein eigens erstelltes Share abgelegt. Es werden nur die jüngsten 3 Backups und alles was jünger als 7 Tage ist nicht gelöscht.</p>
-</div>
-<div class="paragraph">
-<p>Diese gesicherten Daten sollten natürlich auch Teil des großen übergeordneten "Master" Backups auf dem backupserver
-werden. Sie sollen dort in einen parallellen Ordner zu den Daten der homeserver Konfiguration gesichert werden. Ich muss sie also irgendwie zum backupserver übertragen. Das könnte ich über ein Remote Share welches ich in unraid
-einhängen kann machen. Aber wenn es Netzwerkprobleme beim Transport gibt, scheitert das Backup. Außerdem muss der
-Zielrechner an sein und eine asynchrone Speicherung wäre nicht möglich. Daher habe ich mich gegen das einhängen
-eines Remote Shares vom backupserver entschieden. Stattdessen habe ich auch hier Resilio Sync installiert und das
-genutzte Backupshare als synchronisierten Folder Pfad angegeben. Schon war das Problem gelöst. Jetzt kann der
-Transport der Daten asynchron immer dann passieren, wenn es gerade möglich ist.</p>
+<div class="literalblock">
+<div class="content">
+<pre>➜ erzeugt:</pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="fazit-variante-3-2"><a class="anchor" href="#fazit-variante-3-2"></a>6.4. Fazit Variante 3</h3>
-<div class="paragraph">
-<p>Was ziehe ich für ein Fazit? Bin ich zufrieder mit der Lösung?
-Allgemein bin ich sehr zufrieden aber es gibt immer wieder Punkte über die ich nachdenke und bei denen ich meine,
-sie weiter verbessern zu müssen.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Zertifikat: <code>vaultwarden.local.pem</code></p>
+</li>
+<li>
+<p>Key: <code>vaultwarden.local-key.pem</code></p>
+</li>
+<li>
+<p>Root-CA im Betriebssystem installiert</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>FritzBox DNS-Rebind anpassen
+Lege den Hostnamen intern fest:</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>FritzBox → <strong>Heimnetz</strong> → <strong>Netzwerk</strong></p>
+</li>
+<li>
+<p>Deinem Unraid-Server einen Namen geben, z. B. <code>unraid.local</code></p>
+</li>
+<li>
+<p>Falls <code>.local</code> Probleme macht, alternativ <code>.lan</code> verwenden (<code>unraid.lan</code>)</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Vaultwarden-Container mit Zertifikaten starten
+Im Unraid-Docker-Template:</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>WEB_VAULT_ENABLED=true
+ROCKET_TLS={certs="/data/vaultwarden.local.pem",key="/data/vaultwarden.local-key.pem"}</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Die Zertifikate vorher nach
+`/mnt/user/appdata/vaultwarden/` kopieren.</pre>
+</div>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Jedes Backup ist nur so gut wie sein Restore. Darum habe ich mir einen Laptop geschnappt das Backupverzeichnis
-eingehangen und versucht das aktuelle Backup zu entpacken. Remote geht nicht. Erst lokal kopieren - ok dann wird der
-Platz auf der Platte schon extrem eng. Jetzt entpacken - zu wenig Platz auf dem gesamten Laptop. Öffnen und einen
-bestimmten Ordner später zum Entpacken selektieren wollen - dauert ewig beim Öffnen und scheitert dann mit zu wenig
-Platz (vermutlich wird hier einfach auch erst komplett auf Platte entpackt). Also separate mobile USB Platte
-rangestöpselt, das Backup drauf kopiert und dort entpackt - voila geht. Ich komme an alle Daten ran und könnte diese
-wieder einspielen. Das ist verbesserungswürdig - wie weiß ich noch nicht. Aber Daten wie jpeg oder mp4, die schon
-gepackt sind brauchen nicht nochmal gepackt werden. Das riesen Zip hab ich eigentlich nur, damit der Tranport übers
-Netz schneller geht und bei einem FAT Zielsystem mir nicht gleich tausende Pfadwarnungen ala "zu lang" um die Ohren fliegen. Wenn das dann beim Entpacken passieren sollte, hab ich die Durststrecke Netzwerk schon mal hinter mir und kann weiter kopieren auf eine andere Platte mit ntfs oder so. Ziel ist vielleicht statt zip ein tar zu erstellen, mal schauen ob das mit Appdata Backup machbar ist.</p>
-</li>
-<li>
-<p>Das Aufsetzen einer vaultwarden Instanz auf einem weiteren Thin Client aus einem Backup, hab ich ausprobiert nach Anleitung im Netz und hat super funktioniert.</p>
-</li>
-<li>
-<p>Die Server sind sehr schwach und besitzen Lüfter, machen also leise Geräusche.
-Der HP T620 geht gerade noch als vaultserver, den würde ich
-aber zukünftig nicht wieder kaufen - viel zu schwach. Eine Lösung aus 3 Wyse wäre gut gewesen. Trotzdem ohne
-Lüfter und mehr Speicher wäre auch cool.</p>
-</li>
-<li>
-<p>Mir fehlt immer noch eine Lösung für jellyfin - da brauch ich aber einen leistungsstarken Server. Mal
-schauen und sparen.</p>
-</li>
-<li>
-<p>Ich verwende nur USB Platten und habe beobachtet, dass die bei mir durchlaufen. Die legen sich nie schlafen
-obgleich da nur an einigen Tagen was zu tun ist. Da muss ich die Konfiguration nochmal prüfen. Andererseits,
-habe ich dadurch auch vielleicht bisher nicht die Probleme vor die alle Welt immer warnt. Es heißt immer, nimm
-keine USB Platten. Unraid leistet auch keinen Support sowie USB Platten im Spiel sind. Außerdem scheint der
-Unraid Support den Satz "Kein Backup, kein Mitleid" sehr ernst zu nehmen.</p>
-</li>
-<li>
-<p>Ich würde zukünftig ger mal mehr mit einem Pool rumspielen. Zumal ich jetzt verstanden habe, dass man den
-mit zfs wohl ausfallsicher hinbekommt.</p>
-</li>
-<li>
-<p>Ich habe eine strikte Zeitvorgabe eingerichtet für automatische Tasks. Backup Homeserver 00:15 Montags,
-Backup vaultserver 00:15 Dienstags.  Backup backupserver 00:15 Donnerstag. Damit ist das WE Backupfrei und
-ich kann ungehindert basteln.</p>
-</li>
-<li>
-<p>Backup und Perity Check. Zwischen einem Backup und einem Parity Check lasse ich bisher immer mindestens 48 h.
-Die beiden Dinge dauern teilweise extrem lange und ich möchte nicht, dass beide Prozesse zufällig zeitgleich laufen.</p>
-</li>
-<li>
-<p>Die Parity Platten werden bei unraid am meisten belastet, gleichzeitig sind das auch die teuersten weil am
-größten und idealwerweise auch am schnellsten. Immer ein Auge drauf halten und beim Ausfall schnell wechseln.
-Bei mir leben sie aber noch alle.</p>
-</li>
-<li>
-<p>Ein Wort zu Updates und Upgrades. Ich habe das Backup so eingestellt, dass es automatisch vor dem Starten der Container noch Updates einspielt. Diese Updates beziehen sich aber nur auf die Docker Apps. Die Plugins
-spiele ich selber ein. Hier warte ich immer erst eine Woche ab und dann spiele ich sie ein. Bisher keine
-Probleme. Das Upgrade von unraid ist ein wichtiger Punkt. Dazu nehme ich mir Zeit. Das Teil lasse ich
-mindestens eine Woche veröffentlicht sein und dann lese ich die Release Logs auch ganz genau. Meine Erfahrung
-sagt mir das ist wichtig. Von 6.5 auf 7.0 hatte ich was falsch gemacht und das Upgrade hatte sich aufgehangen.
-Neu booten hat geholfen aber das ist riskant. Lieber exakt nach Anweisung vorgehen.</p>
-</li>
-<li>
-<p>Platten wechseln. Geht unproblematisch sofern die neue Platte gleich groß oder gößer ist. Danach läuft der
-Parity Check wieder los und veruscht den Inhalt der neuen Platte aus der Parität herzustellen.</p>
-</li>
-<li>
-<p>Eine Platte die ich aus einem Array entfernt hatte weil ich sie an meinem Laptop anstecken wollte und mal kurz alle Daten kopieren wollte (direkt per USB und nicht übers Netz) lies sich nicht lesen. Die Platten werden
-von Windows gar nicht erkannt. Als ob sie nicht formatiert sind. Ich habe eine Weile gebraucht um zu schnallen,
-dass das am Filesystem liegt, für das mein Windows vermutlich keine Treiber installiert hat. Unter unraid konnte
-ich die Platte wieder super auslesen. Für solche Sachen hilft übrigens das Unassigned Device Plugin.</p>
+<p>Im Browser-Plugin Hintergrund-Domain ändern
+In den Bitwarden-Plugin-Einstellungen:</p>
 <div class="ulist">
 <ul>
+<li>
+<p>„Selbstsigniertes Zertifikat zulassen“</p>
+</li>
+<li>
+<p>URL setzen auf <code><a href="https://vaultwarden.local" class="bare">https://vaultwarden.local</a></code></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Vorteile</div>
+<ul>
+<li>
+<p>Funktioniert offline, ohne Cloud</p>
+</li>
+<li>
+<p>Voll kompatibel mit dem Browser-Plugin</p>
+</li>
+<li>
+<p>Sicherheit wie bei professionellen internen Installationen</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Nachteile</div>
+<ul>
+<li>
+<p>Root-CA muss auf allen Geräten importiert werden (PC, Handy usw.)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"><a class="anchor" href="#2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"></a>6.4. 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)</h3>
+<div class="paragraph">
+<p><em>(die Profi-Lösung mit „echten“ Zertifikaten ohne öffentliche IP)</em></p>
+</div>
+<div class="ulist">
+<div class="title">Benötigt</div>
+<ul>
+<li>
+<p>Eigene Domain (z. B. IONOS, Strato, Cloudflare)</p>
+</li>
+<li>
+<p>Zugriff auf die DNS-Konfiguration</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Schritte</div>
+<ol class="arabic">
+<li>
+<p>Domain kaufen (Beispiel: <code>schubert-home.de</code>)</p>
+</li>
+<li>
+<p>Subdomain anlegen: <code>vaultwarden.schubert-home.de</code></p>
+</li>
+<li>
+<p>DNS-Challenge konfigurieren (z. B. Cloudflare-API oder IONOS-API)</p>
+</li>
+<li>
+<p>In Unraid Zertifikat automatisch erzeugen:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>SWAG (Let’s-Encrypt-Container)</p>
+</li>
+<li>
+<p>oder Caddy (DNS-01-Challenge)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Reverse-Proxy leitet intern auf Vaultwarden weiter</p>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Vorteile</div>
+<ul>
+<li>
+<p>Echte Let’s-Encrypt-Zertifikate</p>
+</li>
+<li>
+<p>Automatische Erneuerung</p>
+</li>
+<li>
+<p>Keine CA-Installation auf Clients nötig</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Nachteile</div>
+<ul>
+<li>
+<p>Domain erforderlich</p>
+</li>
+<li>
+<p>Einrichtung etwas komplexer</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="3-traefik-oder-caddy-als-interner-proxy-interne-ca"><a class="anchor" href="#3-traefik-oder-caddy-als-interner-proxy-interne-ca"></a>6.5. 3. Traefik oder Caddy als interner Proxy + interne CA</h3>
+<div class="paragraph">
+<p><em>(ideal bei mehreren internen Diensten)</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Caddy- oder Traefik-Container installieren</p>
+</li>
+<li>
+<p>Dienst <code>vaultwarden.local</code> als Backend konfigurieren</p>
+</li>
+<li>
+<p>Caddy kann automatisch interne Zertifikate erzeugen</p>
+</li>
+<li>
+<p>Interne CA im Browser-Plugin importieren</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Vorteile</div>
+<ul>
+<li>
+<p>Ideal für Homeserver mit vielen Diensten</p>
+</li>
+<li>
+<p>Sehr elegante Konfiguration mit Caddy</p>
+</li>
+<li>
+<p>Keine manuelle Zertifikatsverwaltung</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Nachteile</div>
+<ul>
+<li>
+<p>Gewisse Lernkurve</p>
+</li>
 <li>
 <p><a href="#">Zurück zur Übersicht</a></p>
 </li>
 </ul>
-</div>
-</li>
-</ol>
 </div>
 </div>
 </div>
