@@ -13,7 +13,7 @@ um das HTTPS-Protokoll zu unterstützen.
 
 Aus meiner Sicht gibt es drei Lösungsmöglichkeiten:
 
-=== 1. Self-Signed-Zertifikat + lokale Root-CA installieren
+==== 1. Self-Signed-Zertifikat + lokale Root-CA installieren
 
 _(die sicherste und sauberste Lösung im Heimnetz)_
 
@@ -69,7 +69,7 @@ ROCKET_TLS={certs="/data/vaultwarden.local.pem",key="/data/vaultwarden.local-key
 .Nachteile
 * Root-CA muss auf allen Geräten importiert werden (PC, Handy usw.)
 
-=== 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)
+==== 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)
 
 _(die Profi-Lösung mit „echten“ Zertifikaten ohne öffentliche IP)_
 
@@ -95,7 +95,7 @@ _(die Profi-Lösung mit „echten“ Zertifikaten ohne öffentliche IP)_
 * Domain erforderlich
 * Einrichtung etwas komplexer
 
-=== 3. Traefik oder Caddy als interner Proxy + interne CA
+==== 3. Traefik oder Caddy als interner Proxy + interne CA
 
 _(ideal bei mehreren internen Diensten)_
 
