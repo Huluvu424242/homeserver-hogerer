@@ -499,7 +499,7 @@ Auf deinem PC oder direkt in Unraid kannst du eine Root-CA generieren,</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-shell" data-lang="shell">mkcert -install
-mkcert vaultwarden.local 192.168.178.50</code></pre>
+mkcert vaultwarden.lan 192.168.178.50</code></pre>
 </div>
 </div>
 <div class="literalblock">
@@ -510,10 +510,10 @@ mkcert vaultwarden.local 192.168.178.50</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>Zertifikat: <code>vaultwarden.local.pem</code></p>
+<p>Zertifikat: <code>vaultwarden.lan.pem</code></p>
 </li>
 <li>
-<p>Key: <code>vaultwarden.local-key.pem</code></p>
+<p>Key: <code>vaultwarden.lan-key.pem</code></p>
 </li>
 <li>
 <p>Root-CA im Betriebssystem installiert</p>
@@ -530,10 +530,10 @@ Lege den Hostnamen intern fest:</p>
 <p>FritzBox → <strong>Heimnetz</strong> → <strong>Netzwerk</strong></p>
 </li>
 <li>
-<p>Deinem Unraid-Server einen Namen geben, z. B. <code>unraid.local</code></p>
+<p>Deinem Unraid-Server einen Namen geben, z. B. <code>unraid.lan</code></p>
 </li>
 <li>
-<p>Falls <code>.local</code> Probleme macht, alternativ <code>.lan</code> verwenden (<code>unraid.lan</code>)</p>
+<p>Falls <code>.lan</code> Probleme macht, alternativ <code>.lan</code> verwenden (<code>unraid.lan</code>)</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -548,7 +548,7 @@ Im Unraid-Docker-Template:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>WEB_VAULT_ENABLED=true
-ROCKET_TLS={certs="/data/vaultwarden.local.pem",key="/data/vaultwarden.local-key.pem"}</code></pre>
+ROCKET_TLS={certs="/data/vaultwarden.lan.pem",key="/data/vaultwarden.lan-key.pem"}</code></pre>
 </div>
 </div>
 <div class="literalblock">
@@ -568,7 +568,7 @@ In den Bitwarden-Plugin-Einstellungen:</p>
 <p>„Selbstsigniertes Zertifikat zulassen“</p>
 </li>
 <li>
-<p>URL setzen auf <code><a href="https://vaultwarden.local" class="bare">https://vaultwarden.local</a></code></p>
+<p>URL setzen auf <code><a href="https://vaultwarden.lan" class="bare">https://vaultwarden.lan</a></code></p>
 </li>
 </ul>
 </div>
@@ -681,7 +681,7 @@ In den Bitwarden-Plugin-Einstellungen:</p>
 <p>Caddy- oder Traefik-Container installieren</p>
 </li>
 <li>
-<p>Dienst <code>vaultwarden.local</code> als Backend konfigurieren</p>
+<p>Dienst <code>vaultwarden.lan</code> als Backend konfigurieren</p>
 </li>
 <li>
 <p>Caddy kann automatisch interne Zertifikate erzeugen</p>
