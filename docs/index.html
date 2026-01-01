@@ -486,12 +486,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#konzept-4">A.2. Konzept</a></li>
 </ul>
 </li>
-<li><a href="#_script_backup">6. Script Backup</a>
+<li><a href="#_script_backup">Appendix B: Script Backup</a>
 <ul class="sectlevel2">
-<li><a href="#motivation-3">6.1. Motivation</a></li>
-<li><a href="#konzept-5">6.2. Konzept</a></li>
-<li><a href="#_vorbetrachtungen_zur_l_sung">6.3. Vorbetrachtungen zur Lösung</a></li>
-<li><a href="#lösung">6.4. Lösung</a></li>
+<li><a href="#motivation-3">B.1. Motivation</a></li>
+<li><a href="#konzept-5">B.2. Konzept</a></li>
+<li><a href="#_vorbetrachtungen_zur_l_sung">B.3. Vorbetrachtungen zur Lösung</a></li>
+<li><a href="#lösung">B.4. Lösung</a></li>
 </ul>
 </li>
 </ul>
@@ -1405,10 +1405,10 @@ In den Bitwarden-Plugin-Einstellungen:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_script_backup"><a class="anchor" href="#_script_backup"></a>6. Script Backup</h2>
+<h2 id="_script_backup"><a class="anchor" href="#_script_backup"></a>Appendix B: Script Backup</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="motivation-3"><a class="anchor" href="#motivation-3"></a>6.1. Motivation</h3>
+<h3 id="motivation-3"><a class="anchor" href="#motivation-3"></a>B.1. Motivation</h3>
 <div class="paragraph">
 <p>Einige Backup Aufgaben dauern sehr lange und werden lieber Nutzerspezifisch ausgelegt.
 Für mich habe ich unter der Kategorie folgende Aktionen identifiziert:</p>
@@ -1428,7 +1428,7 @@ Für mich habe ich unter der Kategorie folgende Aktionen identifiziert:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="konzept-5"><a class="anchor" href="#konzept-5"></a>6.2. Konzept</h3>
+<h3 id="konzept-5"><a class="anchor" href="#konzept-5"></a>B.2. Konzept</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1447,7 +1447,7 @@ Für mich habe ich unter der Kategorie folgende Aktionen identifiziert:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_vorbetrachtungen_zur_l_sung"><a class="anchor" href="#_vorbetrachtungen_zur_l_sung"></a>6.3. Vorbetrachtungen zur Lösung</h3>
+<h3 id="_vorbetrachtungen_zur_l_sung"><a class="anchor" href="#_vorbetrachtungen_zur_l_sung"></a>B.3. Vorbetrachtungen zur Lösung</h3>
 <div class="paragraph">
 <p>Ich habe mit diversen Implementierungen von Skripten gearbeitet und dabei einige Erfahrungen gewonnen.Btw. wenn ich hier von zu archivierenden Daten rede, geht es immer um ca. 2 TB die am Stück zu sichern sind.</p>
 </div>
@@ -1503,7 +1503,7 @@ wer schaut schon die Liste der letzten 30 Läufe durch?</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="lösung"><a class="anchor" href="#lösung"></a>6.4. Lösung</h3>
+<h3 id="lösung"><a class="anchor" href="#lösung"></a>B.4. Lösung</h3>
 <div class="paragraph">
 <p>Für die Daten Backups nutze ich die Unraid App "User Scripts" von Andrew Zawadzki. Die App ist kein Docker Container
 sondern scheinbar nur ein Unraid Plugin.</p>
@@ -1522,7 +1522,7 @@ sehr sinnvoll, vor ihrer Nutzung ihre Logik und Arbeitsweise zu verstehen.</p>
  - Danke.</p>
 </div>
 <div class="sect3">
-<h4 id="backup-stuff-in-backupfolder"><a class="anchor" href="#backup-stuff-in-backupfolder"></a>6.4.1. Backup Stuff in Backupfolder</h4>
+<h4 id="backup-stuff-in-backupfolder"><a class="anchor" href="#backup-stuff-in-backupfolder"></a>B.4.1. Backup Stuff in Backupfolder</h4>
 <div class="paragraph">
 <p>Erstellt einen Snapshot vom Medien oder Dokumenten Ordner.</p>
 </div>
@@ -1589,7 +1589,7 @@ exit 0</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="backup-stuff-auf-hdd"><a class="anchor" href="#backup-stuff-auf-hdd"></a>6.4.2. Backup Stuff auf HDD</h4>
+<h4 id="backup-stuff-auf-hdd"><a class="anchor" href="#backup-stuff-auf-hdd"></a>B.4.2. Backup Stuff auf HDD</h4>
 <div class="paragraph">
 <p>Erstellt einen Snapshot vom Backup Ordner auf ein externes Laufwerk.</p>
 </div>
@@ -1653,7 +1653,7 @@ exit 0</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="dupliziere-archive-auf-hdd"><a class="anchor" href="#dupliziere-archive-auf-hdd"></a>6.4.3. Dupliziere Archive auf HDD</h4>
+<h4 id="dupliziere-archive-auf-hdd"><a class="anchor" href="#dupliziere-archive-auf-hdd"></a>B.4.3. Dupliziere Archive auf HDD</h4>
 <div class="paragraph">
 <p>Dupliziert einen Folder auf einer externen HDD - nur in Ausnahmefällen nutzen!</p>
 </div>
