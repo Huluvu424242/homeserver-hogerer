@@ -1,5 +1,7 @@
 :imagesdir: ./images
 
+[appendix]
+
 [#_script_backup]
 == Script Backup
 
