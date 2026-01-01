@@ -2,7 +2,7 @@
 [appendix]
 
 [#_script_backup]
-== Script Backup
+== Skript Backup
 
 === Motivation
 
