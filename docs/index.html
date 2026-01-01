@@ -486,6 +486,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#konzept-4">6.2. Konzept</a></li>
 </ul>
 </li>
+<li><a href="#_script_backup">7. Script Backup</a>
+<ul class="sectlevel2">
+<li><a href="#motivation-3">7.1. Motivation</a></li>
+<li><a href="#konzept-5">7.2. Konzept</a></li>
+<li><a href="#_vorbetrachtungen_zur_l_sung">7.3. Vorbetrachtungen zur Lösung</a></li>
+<li><a href="#lösung">7.4. Lösung</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1119,9 +1127,7 @@ ich die Platte wieder super auslesen. Für solche Sachen hilft übrigens das Una
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#">Zurück zur Übersicht</a>
-:appendix:
-:imagesdir: ./images</p>
+<p><a href="#">Zurück zur Übersicht</a></p>
 </li>
 </ul>
 </div>
@@ -1393,6 +1399,322 @@ In den Bitwarden-Plugin-Einstellungen:</p>
 <p><a href="#">Zurück zur Übersicht</a></p>
 </li>
 </ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_script_backup"><a class="anchor" href="#_script_backup"></a>7. Script Backup</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="motivation-3"><a class="anchor" href="#motivation-3"></a>7.1. Motivation</h3>
+<div class="paragraph">
+<p>Einige Backup Aufgaben dauern sehr lange und werden lieber Nutzerspezifisch ausgelegt.
+Für mich habe ich unter der Kategorie folgende Aktionen identifiziert:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Kopieren der Sync Verzeichnisse in eine unkomprimierte Backup Ablage</p>
+</li>
+<li>
+<p>Kopieren der Dateien aus der Backup Ablage auf eine externe HDD ohne Komprimierung</p>
+</li>
+<li>
+<p>Kopieren der Dateien auf einer externen HDD in ein anderes Verzeichnis der gleichen HDD (Duplizieren)</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="konzept-5"><a class="anchor" href="#konzept-5"></a>7.2. Konzept</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Der aktuelle Datenstand wird über Resilio Sync über diverse Devices synchron aktuell gehalten.</p>
+</li>
+<li>
+<p>Es gibt einen exponierten Backupserver auf dem alle synchronisierten Verzeichnisse abliegen und in sync gehalten werden.</p>
+</li>
+<li>
+<p>Der Backupserver verfügt über ein separates Share in welches ein Snapshot aller synchronisierten Verzeichnisse abgelegt werden kann.</p>
+</li>
+<li>
+<p>Der Backupserver verfügt über die Möglichkeit externe HDDs als echten Backupspeicher anschließen zu können.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_vorbetrachtungen_zur_l_sung"><a class="anchor" href="#_vorbetrachtungen_zur_l_sung"></a>7.3. Vorbetrachtungen zur Lösung</h3>
+<div class="paragraph">
+<p>Ich habe mit diversen Implementierungen von Skripten gearbeitet und dabei einige Erfahrungen gewonnen.Btw. wenn ich hier von zu archivierenden Daten rede, geht es immer um ca. 2 TB die am Stück zu sichern sind.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ich nehme keine gepackten Archive mehr, sondern kopiere flach.Das Kopieren dauert bei 2 TB
+Archiv mehrere Tage und bei einem Abbruch beginnt man bei einem Archiv von vorn egal ob copy oder rsync Befehl.</p>
+</li>
+<li>
+<p>Nimm niemals den copy Befehl.Zunächst habe ich die Kopien per copy Befehl mit diversen Argumenten -a oder -R
+genutzt.Das bringt nix, da der Kopiervorgang bei 2 TB mehrere Tage dauert.Ein Abbruch und Du beginnst von vorn,
+weil der Befehl nicht weiß wo er neu aufsetzen soll.</p>
+</li>
+<li>
+<p>Nimm rsync das kann nach einem Abbruch neu aufsetzen und kopiert auch nur die Deltas, was eine extreme Zeitersparnis
+darstellt, wenn ein bestehendes Backup nur aktualisiert werden soll.</p>
+</li>
+<li>
+<p>Exkludiere die .sync Ordner von resilio Sync. Resilio speichert in diesen Ordnern zum Teil
+Gigabyte große Kopien der synchronisierten Originale. Das kam unerwartet und daher habe ich
+die Ordner sofort aus dem Kopiervorgang rausgenommen. Hat auch den Vorteil, dass kein System
+denkt der Zielordner wäre Teil einer Synchronisation.</p>
+</li>
+<li>
+<p>Schreibe ein LOCKFILE wenn das Skript läuft um ein Doppelstart zu verhindern.</p>
+</li>
+<li>
+<p>Reagiere im Skript per trap auf TERM und INT Signale um z.B. das Lockfile wieder wegzuräumen.</p>
+</li>
+<li>
+<p>Überlege den Kopiervorgang zu parallelisieren. Doch bedenke, es gibt auch Nachteile. rsync arbeitet single Threaded
+aber über die Kombination mit find und xargs kann man mehrere "Pseudo-Threads" erzeugen. Doch beachte, dass Deine
+Aufräumlogik hier Probleme bekommt. Bei einem Abbruch über Unraid, müssen alle "Threads" gekillt werden. Das hat bei
+mir nie geklappt und immer komisches Verhalten erzeugt, da man es ja erst nach ps -xa gesehen hat, dass noch alte
+Teile laufen und kopieren. Darum habe ich final keine Parallelität mehr genutzt.</p>
+</li>
+<li>
+<p>Kopiere möglichst auf eine andere Platte und nicht auf die gleiche Platte - Stichwort Head Thrashing oder
+Seek Thrashing oder Disk Thrashing. Kopieren auf andere PLatten geht immer schneller und verringert die
+Abnutzung der Platten. Der Kopf ist beim Kopieren auf derselben Platte nur am Hin- und Herspringen.
+Parallelisierung verschlimmert die Sache nur noch mehr. Ein Journaling File System wirkt sich in dem Fall auch
+nicht günstig aus. Wenn also die guten Sachen zur Bremse werden, dann macht man was falsch. Darum Journaling FS
+ist super, Lesen und Schreiben auf der gleichen Platte ist schlecht.</p>
+</li>
+<li>
+<p>Vermerke im Ziel den Erfolg oder Misserfolg sowie das Datum des gelaufenen oder abgebrochenen Backups. Es ist
+immer gut wenn man nach Monaten mal auf den Backupfolder schaut und denkt oooch der Size passt ja und dann sieht,
+uuups das letzte Mal vor Wochen erfolgreich. Allein über den Platz merkt man das meist gar nicht so schnell und
+wer schaut schon die Liste der letzten 30 Läufe durch?</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="lösung"><a class="anchor" href="#lösung"></a>7.4. Lösung</h3>
+<div class="paragraph">
+<p>Für die Daten Backups nutze ich die Unraid App "User Scripts" von Andrew Zawadzki. Die App ist kein Docker Container
+sondern scheinbar nur ein Unraid Plugin.</p>
+</div>
+<div class="paragraph">
+<p>Die folgenden Skripte, sind die Skripte welche ich selbst nutze. Diese muss natürlich jeder an seine eigene Umgebung
+anpassen bzw. nach den eigenen Bedürfnissen funktional überarbeiten oder kann sie einfach auch nur als Ideenspende
+nutzen. Was nicht funktionieren wird ist - kopieren und laufen lassen. Das geht mit Sicherheit schief.</p>
+</div>
+<div class="paragraph">
+<p>Auch stellen die Skripte einen aktuellen Arbeitsstand dar, sind also weder konsolidiert noch optimiert. Daher ist es
+sehr sinnvoll, vor ihrer Nutzung ihre Logik und Arbeitsweise zu verstehen.</p>
+</div>
+<div class="paragraph">
+<p>Das Logging habe ich nicht elegant gelöst bekommen - wer da Tipps hat, gern mal Bescheid geben oder einen PR stellen
+ - Danke.</p>
+</div>
+<div class="sect3">
+<h4 id="backup-stuff-in-backupfolder"><a class="anchor" href="#backup-stuff-in-backupfolder"></a>7.4.1. Backup Stuff in Backupfolder</h4>
+<div class="paragraph">
+<p>Erstellt einen Snapshot vom Medien oder Dokumenten Ordner.</p>
+</div>
+<div class="listingblock">
+<div class="title">backup-stuff.sh</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+set -euo pipefail
+
+# Konfiguration
+SRC="/mnt/user/ablagen/folders/ResilioSync/"
+DST="/mnt/user/backup-stuff"
+INFOFILE="${DST}/backup-info.txt"
+DATEFILE="${DST}/backup-date.txt"
+LOG_DIR="/mnt/user/logs/backup-stuff"
+LOGFILE="${LOG_DIR}/backup-stuff_$(date '+%Y%m%d_%H%M%S').log"
+LOCKFILE="/tmp/backup_stuff.lock"
+
+# Zielverzeichnis anlegen
+mkdir -p "$LOG_DIR"          # sonst scheitert: tee: ... No such file or directory
+mkdir -p "$DST"              # erstellt den kompletten Zielpfad inkl. Datum
+
+
+# Signal-Handler und Aufräumroutine
+cleanup() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✋ Backup-Skript abgebrochen durch Signal (SIGINT/SIGTERM)" | tee -a "$LOGFILE"
+    rm -f "$LOCKFILE"
+    exit 1
+}
+trap cleanup INT TERM
+
+# Lockfile prüfen und setzen
+if [[ -f "$LOCKFILE" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️  Backup läuft bereits (Lockfile gefunden: $LOCKFILE). Abbruch." | tee -a "$LOGFILE"
+    exit 2
+fi
+echo $$ &gt; "$LOCKFILE"
+
+# Bei erfolgreichem oder abgebrochenem Lauf Lockfile entfernen
+finish() {
+    rm -f "$LOCKFILE"
+}
+trap finish EXIT
+
+# Backup starten
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] === Backup gestartet ===" | tee -a "$LOGFILE"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starte rsync Backup..." | tee -a "$LOGFILE"
+rsync -a --delete --info=progress2 --no-compress \
+    --exclude='.sync/' \
+    "$SRC" "$DST"
+
+# Backup-Info schreiben
+BACKUP_TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
+echo "Backup abgeschlossen am: $BACKUP_TIMESTAMP" &gt; "$INFOFILE"
+echo "[$BACKUP_TIMESTAMP] ✅ Backup erfolgreich abgeschlossen." | tee -a "$LOGFILE"
+
+# Backup-Date schreiben
+BACKUP_DATE="$(date '+%Y-%m-%d')"
+echo "$BACKUP_DATE" &gt; "$DATEFILE"
+
+
+exit 0</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="backup-stuff-auf-hdd"><a class="anchor" href="#backup-stuff-auf-hdd"></a>7.4.2. Backup Stuff auf HDD</h4>
+<div class="paragraph">
+<p>Erstellt einen Snapshot vom Backup Ordner auf ein externes Laufwerk.</p>
+</div>
+<div class="listingblock">
+<div class="title">cp_backup2hdd_stuff.sh</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+set -euo pipefail
+
+# Konfiguration
+SRC="/mnt/user/backup-stuff/"
+DST="/mnt/disks/USB_STORAGE/backup/stuff"
+INFOFILE="${DST}/backup-info.txt"
+DATEFILE="${DST}/backup-date.txt"
+LOGFILE="/mnt/user/logs/hdd-backup-stuff.log"
+LOCKFILE="/tmp/backup2hdd-stuff.lock"
+
+# Zielverzeichnis anlegen
+mkdir -p "$DST"
+
+# Signal-Handler und Aufräumroutine
+cleanup() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✋ Backup-Skript abgebrochen durch Signal (SIGINT/SIGTERM)" | tee -a "$LOGFILE"
+    rm -f "$LOCKFILE"
+    exit 1
+}
+trap cleanup INT TERM
+
+# Lockfile prüfen und setzen
+if [[ -f "$LOCKFILE" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️  Backup läuft bereits (Lockfile gefunden: $LOCKFILE). Abbruch." | tee -a "$LOGFILE"
+    exit 2
+fi
+echo $$ &gt; "$LOCKFILE"
+
+# Bei erfolgreichem oder abgebrochenem Lauf Lockfile entfernen
+finish() {
+    rm -f "$LOCKFILE"
+}
+trap finish EXIT
+
+# Backup starten
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] === Backup gestartet ===" | tee -a "$LOGFILE"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starte rsync Backup..." | tee -a "$LOGFILE"
+rsync -a --delete --info=progress2 --no-compress \
+    --exclude='.sync/' \
+    "$SRC" "$DST"
+
+# Backup-Info schreiben
+BACKUP_TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
+echo "Backup abgeschlossen am: $BACKUP_TIMESTAMP" &gt; "$INFOFILE"
+echo "[$BACKUP_TIMESTAMP] ✅ Backup erfolgreich abgeschlossen." | tee -a "$LOGFILE"
+
+# Backup-Date schreiben
+BACKUP_DATE="$(date '+%Y-%m-%d')"
+echo "$BACKUP_DATE" &gt; "$DATEFILE"
+
+
+exit 0</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dupliziere-archive-auf-hdd"><a class="anchor" href="#dupliziere-archive-auf-hdd"></a>7.4.3. Dupliziere Archive auf HDD</h4>
+<div class="paragraph">
+<p>Dupliziert einen Folder auf einer externen HDD - nur in Ausnahmefällen nutzen!</p>
+</div>
+<div class="listingblock">
+<div class="title">cp_hdd2hdd_archive.sh</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+set -Eeuo pipefail
+
+SRC="/mnt/disks/USB_STORAGE/backup/"
+DST="/mnt/disks/USB_STORAGE/archive"
+INFOFILE="${DST}/cp_backup-info.txt"
+DATEFILE="${DST}/cp_backup-date.txt"
+LOGDIR="/mnt/user/logs/cp_hdd2hdd_archive"
+LOGFILE="${LOGDIR}/cp_backup2archive.log"
+LOCKFILE="/tmp/cp_hdd2hdd_archive.lock"
+# PARTIAL_DIR="${DST}/.rsync-partial"
+
+mkdir -p "$DST" "$LOGDIR"
+
+ts() { date '+%Y-%m-%d %H:%M:%S'; }
+
+if [[ -f "$LOCKFILE" ]]; then
+  echo "[$(ts)] ⚠️  Backup läuft bereits (Lockfile gefunden). Abbruch." | tee -a "$LOGFILE"
+  exit 2
+fi
+echo $$ &gt; "$LOCKFILE"
+
+finish() { rm -f "$LOCKFILE"; }
+trap finish EXIT
+
+on_signal() {
+  echo "[$(ts)] ✋ Signal empfangen – breche ab…" | tee -a "$LOGFILE"
+  # Bei single-rsync reicht ein normales Exit; rsync beendet sich durch das Signal mit.
+  exit 1
+}
+trap on_signal INT TERM
+
+echo "[$(ts)] === Backup gestartet ===" | tee -a "$LOGFILE"
+echo "[$(ts)] Quelle: $SRC" | tee -a "$LOGFILE"
+echo "[$(ts)] Ziel:   $DST" | tee -a "$LOGFILE"
+
+# Ein einzelner rsync-Stream (schnellste Variante auf derselben Platte)
+rsync -aHAX --numeric-ids \
+  --delete --delete-delay --delay-updates \
+  --whole-file \
+  --partial \
+  --no-compress \
+  --info=progress2,stats2 --human-readable \
+  --exclude='.sync/' \
+  -- "$SRC" "$DST" | tee -a "$LOGFILE"
+
+BACKUP_TIMESTAMP="$(ts)"
+echo "Backup abgeschlossen am: $BACKUP_TIMESTAMP" &gt; "$INFOFILE"
+echo "[$(ts)] ✅ Backup erfolgreich abgeschlossen." | tee -a "$LOGFILE"
+date '+%Y-%m-%d' &gt; "$DATEFILE"
+exit 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="#">Zurück zur Übersicht</a></p>
 </div>
 </div>
 </div>
