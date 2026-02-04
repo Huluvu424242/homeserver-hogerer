@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.16">
-<title>Vorwort</title>
+<title>SSL-Konfiguration für Vaultwarden</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -443,29 +443,280 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#vorwort">Vorwort</a></li>
+<li><a href="#ssl-konfiguration-für-vaultwarden">Appendix A: SSL-Konfiguration für Vaultwarden</a>
+<ul class="sectlevel2">
+<li><a href="#motivation">Motivation</a></li>
+<li><a href="#konzept">Konzept</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="vorwort"><a class="anchor" href="#vorwort"></a>Vorwort</h2>
+<h2 id="ssl-konfiguration-für-vaultwarden"><a class="anchor" href="#ssl-konfiguration-für-vaultwarden"></a>Appendix A: SSL-Konfiguration für Vaultwarden</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="motivation"><a class="anchor" href="#motivation"></a>Motivation</h3>
 <div class="paragraph">
-<p>Wie wohl jeder von uns habe ich irgendwann in meinem Leben angefangen Daten anzuhäufen und wollte diese irgendwann endlich digitalisieren und ordnen. Also wird irgendein Storage System mit Festplatten benötigt und eine Methode (Full oder Delta) Backups zu erstellen.</p>
+<p>Seit dem neuesten Update des Bitwarden-Browser-Plugins lassen sich nur noch
+verschlüsselte Verbindungen zum Vaultwarden-Server herstellen.
+Damit muss dieser zwingend über ein SSL-Zertifikat verfügen,
+um das HTTPS-Protokoll zu unterstützen.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="konzept"><a class="anchor" href="#konzept"></a>Konzept</h3>
+<div class="paragraph">
+<p>Aus meiner Sicht gibt es drei Lösungsmöglichkeiten:</p>
+</div>
+<div class="sect3">
+<h4 id="1-self-signed-zertifikat-lokale-root-ca-installieren"><a class="anchor" href="#1-self-signed-zertifikat-lokale-root-ca-installieren"></a>1. Self-Signed-Zertifikat + lokale Root-CA installieren</h4>
+<div class="paragraph">
+<p><em>(die sicherste und sauberste Lösung im Heimnetz)</em></p>
+</div>
+<div class="olist arabic">
+<div class="title">Schritte</div>
+<ol class="arabic">
+<li>
+<p>Eigenes Root-CA erstellen
+Auf deinem PC oder direkt in Unraid kannst du eine Root-CA generieren,</p>
+<div class="olist loweralpha">
+<ol class="loweralpha">
+<li>
+<p>B. mit <strong>mkcert</strong> oder <strong>OpenSSL</strong>.</p>
+<div class="literalblock">
+<div class="content">
+<pre>Beispiel mit *mkcert* (empfohlen):</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">mkcert -install
+mkcert vaultwarden.lan 192.168.178.50</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>➜ erzeugt:</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Zertifikat: <code>vaultwarden.lan.pem</code></p>
+</li>
+<li>
+<p>Key: <code>vaultwarden.lan-key.pem</code></p>
+</li>
+<li>
+<p>Root-CA im Betriebssystem installiert</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>FritzBox DNS-Rebind anpassen
+Lege den Hostnamen intern fest:</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>FritzBox → <strong>Heimnetz</strong> → <strong>Netzwerk</strong></p>
+</li>
+<li>
+<p>Deinem Unraid-Server einen Namen geben, z. B. <code>unraid.lan</code></p>
+</li>
+<li>
+<p>Falls <code>.lan</code> Probleme macht, alternativ <code>.lan</code> verwenden (<code>unraid.lan</code>)</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Vaultwarden-Container mit Zertifikaten starten
+Im Unraid-Docker-Template:</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>WEB_VAULT_ENABLED=true
+ROCKET_TLS={certs="/data/vaultwarden.lan.pem",key="/data/vaultwarden.lan-key.pem"}</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Die Zertifikate vorher nach
+`/mnt/user/appdata/vaultwarden/` kopieren.</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Im Browser-Plugin Hintergrund-Domain ändern
+In den Bitwarden-Plugin-Einstellungen:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>„Selbstsigniertes Zertifikat zulassen“</p>
+</li>
+<li>
+<p>URL setzen auf <code><a href="https://vaultwarden.lan" class="bare">https://vaultwarden.lan</a></code></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Vorteile</div>
+<ul>
+<li>
+<p>Funktioniert offline, ohne Cloud</p>
+</li>
+<li>
+<p>Voll kompatibel mit dem Browser-Plugin</p>
+</li>
+<li>
+<p>Sicherheit wie bei professionellen internen Installationen</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Nachteile</div>
+<ul>
+<li>
+<p>Root-CA muss auf allen Geräten importiert werden (PC, Handy usw.)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"><a class="anchor" href="#2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"></a>2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)</h4>
+<div class="paragraph">
+<p><em>(die Profi-Lösung mit „echten“ Zertifikaten ohne öffentliche IP)</em></p>
+</div>
+<div class="ulist">
+<div class="title">Benötigt</div>
+<ul>
+<li>
+<p>Eigene Domain (z. B. IONOS, Strato, Cloudflare)</p>
+</li>
+<li>
+<p>Zugriff auf die DNS-Konfiguration</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Schritte</div>
+<ol class="arabic">
+<li>
+<p>Domain kaufen (Beispiel: <code>schubert-home.de</code>)</p>
+</li>
+<li>
+<p>Subdomain anlegen: <code>vaultwarden.schubert-home.de</code></p>
+</li>
+<li>
+<p>DNS-Challenge konfigurieren (z. B. Cloudflare-API oder IONOS-API)</p>
+</li>
+<li>
+<p>In Unraid Zertifikat automatisch erzeugen:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>SWAG (Let’s-Encrypt-Container)</p>
+</li>
+<li>
+<p>oder Caddy (DNS-01-Challenge)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Reverse-Proxy leitet intern auf Vaultwarden weiter</p>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Vorteile</div>
+<ul>
+<li>
+<p>Echte Let’s-Encrypt-Zertifikate</p>
+</li>
+<li>
+<p>Automatische Erneuerung</p>
+</li>
+<li>
+<p>Keine CA-Installation auf Clients nötig</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Nachteile</div>
+<ul>
+<li>
+<p>Domain erforderlich</p>
+</li>
+<li>
+<p>Einrichtung etwas komplexer</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="3-traefik-oder-caddy-als-interner-proxy-interne-ca"><a class="anchor" href="#3-traefik-oder-caddy-als-interner-proxy-interne-ca"></a>3. Traefik oder Caddy als interner Proxy + interne CA</h4>
+<div class="paragraph">
+<p><em>(ideal bei mehreren internen Diensten)</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Caddy- oder Traefik-Container installieren</p>
+</li>
+<li>
+<p>Dienst <code>vaultwarden.lan</code> als Backend konfigurieren</p>
+</li>
+<li>
+<p>Caddy kann automatisch interne Zertifikate erzeugen</p>
+</li>
+<li>
+<p>Interne CA im Browser-Plugin importieren</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Vorteile</div>
+<ul>
+<li>
+<p>Ideal für Homeserver mit vielen Diensten</p>
+</li>
+<li>
+<p>Sehr elegante Konfiguration mit Caddy</p>
+</li>
+<li>
+<p>Keine manuelle Zertifikatsverwaltung</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Nachteile</div>
+<ul>
+<li>
+<p>Gewisse Lernkurve</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Begonnen habe ich diese Odyssee mit diversen Raspberry PIs. Letzlich waren es so viele Dinge die ich mit PIs ausprobiert habe, dass es sich irgendwann gelohnt hat die <a href="https://huluvu424242.github.io/Raspi-Garage/">Raspi Garage</a> in Leben zu rufen.
-Aus dieser Zeit stammt Variante 1 = ein Raspi &amp; eine 6 TB Festplatte mit Resilio Sync drauf. War als Einstieg ganz gut, hat auch die ganzen Jahre funktioniert - war mir aber zu unsicher.</p>
+<p><a href="index.html">Zurück zur Übersicht</a></p>
 </div>
-<div class="paragraph">
-<p>Dann habe ich mich hingesetzt und gefragt wie machen das andere Menschen und bin auf den Begriff NAS gekommen. Da ich eine FritzBox hatte war ein NAS schnell realisiert. Diese Versuche werde ich hier aber gar nicht erst dokumentieren. Die Fritz Box ist ein klasse Router und dafür auch genau das Richtige. Aber als NAS taugt sie mir nicht. Da fehlt die Leistung und dann ging das bei mir auch nur mit WebDAV - das war total langsam. Also keine Option.</p>
 </div>
-<div class="paragraph">
-<p>Dann habe ich was gelesen von Homeserver statt NAS und schaute neugierig darauf was eigentlich ein Homeserver ist. OK, für die meisten ist ein Homeserver wohl ein teures Gerät mit vielen teuren Festplatten und komplizierter Storagetechnik, genannt RAID irgendwas, und als ich die Preise sah war mir klar, hier bin ich falsch. Allerdings bin ich mir da inzwischen nicht mehr ganz so sicher, denn bei unraid habe ich inzwischen 3 Server und davon 2 mit lifetime Lizenz und einen mit Basic Lizenz. Wenn also die Systeme von Synologie, QNap oder UGreen genommen hätte, hätte ich vermutlich ein besseres System bekommen als jetzt aber das weiß ich nicht, da ich nicht vergleichen kann ohne diese Systeme mal getestet zu haben. Dann gibt es ja auch noch Vertreter wie myCloud, ownCloud, TrueNAS, TerraMaster und Nextcloud. Es war mir einfach zu viel diese alle zu testen und so hab ich recherchiert und fand dieses Video von ct3003 <a href="https://www.youtube.com/watch?v=cB5n_cWJor8" class="external" target="_blank" rel="noopener">Du willst einen Homeserver (glaub mir)</a> und das hat mich leider überzeugt.</p>
-</div>
-<div class="paragraph">
-<p>Heute würde ich meiner Naivität folgend, genauso blauäugig es mal mit UGreen probieren. Aber zunächst bin ich mal bei Unraid geblieben - auch weil ich da schon ne Menge Geld versenkt habe.</p>
 </div>
 </div>
 </div>

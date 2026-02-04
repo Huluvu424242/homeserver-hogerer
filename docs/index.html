@@ -480,6 +480,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#fazit-variante-3">5.4. Fazit Variante 3</a></li>
 </ul>
 </li>
+<li><a href="#ssl-konfiguration-für-vaultwarden">Appendix A: SSL-Konfiguration für Vaultwarden</a>
+<ul class="sectlevel2">
+<li><a href="#motivation-2">A.1. Motivation</a></li>
+<li><a href="#konzept-4">A.2. Konzept</a></li>
+</ul>
+</li>
+<li><a href="#_script_backup">Appendix B: Skript Backup</a>
+<ul class="sectlevel2">
+<li><a href="#motivation-3">B.1. Motivation</a></li>
+<li><a href="#konzept-5">B.2. Konzept</a></li>
+<li><a href="#_vorbetrachtungen_zur_l_sung">B.3. Vorbetrachtungen zur Lösung</a></li>
+<li><a href="#lösung">B.4. Lösung</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -522,10 +536,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="vorwort"><a class="anchor" href="#vorwort"></a>2. Vorwort</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Wie wohl jeder von uns habe ich in meinem Leben angefangen Daten anzuhäufen und wollte diese irgendwann endlich digitalisieren und ordnen.</p>
+<p>Wie wohl jeder von uns habe ich irgendwann in meinem Leben angefangen Daten anzuhäufen und wollte diese irgendwann endlich digitalisieren und ordnen. Also wird irgendein Storage System mit Festplatten benötigt und eine Methode (Full oder Delta) Backups zu erstellen.</p>
 </div>
 <div class="paragraph">
-<p>Begonnen hat diese Odyssee mit diversen Raspberry PIs. Letzlich waren es so viele Dinge die ich mit PIs ausprobiert habe, dass es sich irgendwann gelohnt hat die <a href="https://huluvu424242.github.io/Raspi-Garage/">Raspi Garage</a> in Leben zu rufen.
+<p>Begonnen habe ich diese Odyssee mit diversen Raspberry PIs. Letzlich waren es so viele Dinge die ich mit PIs ausprobiert habe, dass es sich irgendwann gelohnt hat die <a href="https://huluvu424242.github.io/Raspi-Garage/">Raspi Garage</a> in Leben zu rufen.
 Aus dieser Zeit stammt Variante 1 = ein Raspi &amp; eine 6 TB Festplatte mit Resilio Sync drauf. War als Einstieg ganz gut, hat auch die ganzen Jahre funktioniert - war mir aber zu unsicher.</p>
 </div>
 <div class="paragraph">
@@ -1119,6 +1133,589 @@ ich die Platte wieder super auslesen. Für solche Sachen hilft übrigens das Una
 </div>
 </li>
 </ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ssl-konfiguration-für-vaultwarden"><a class="anchor" href="#ssl-konfiguration-für-vaultwarden"></a>Appendix A: SSL-Konfiguration für Vaultwarden</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="motivation-2"><a class="anchor" href="#motivation-2"></a>A.1. Motivation</h3>
+<div class="paragraph">
+<p>Seit dem neuesten Update des Bitwarden-Browser-Plugins lassen sich nur noch
+verschlüsselte Verbindungen zum Vaultwarden-Server herstellen.
+Damit muss dieser zwingend über ein SSL-Zertifikat verfügen,
+um das HTTPS-Protokoll zu unterstützen.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="konzept-4"><a class="anchor" href="#konzept-4"></a>A.2. Konzept</h3>
+<div class="paragraph">
+<p>Aus meiner Sicht gibt es drei Lösungsmöglichkeiten:</p>
+</div>
+<div class="sect3">
+<h4 id="1-self-signed-zertifikat-lokale-root-ca-installieren"><a class="anchor" href="#1-self-signed-zertifikat-lokale-root-ca-installieren"></a>A.2.1. 1. Self-Signed-Zertifikat + lokale Root-CA installieren</h4>
+<div class="paragraph">
+<p><em>(die sicherste und sauberste Lösung im Heimnetz)</em></p>
+</div>
+<div class="olist arabic">
+<div class="title">Schritte</div>
+<ol class="arabic">
+<li>
+<p>Eigenes Root-CA erstellen
+Auf deinem PC oder direkt in Unraid kannst du eine Root-CA generieren,</p>
+<div class="olist loweralpha">
+<ol class="loweralpha">
+<li>
+<p>B. mit <strong>mkcert</strong> oder <strong>OpenSSL</strong>.</p>
+<div class="literalblock">
+<div class="content">
+<pre>Beispiel mit *mkcert* (empfohlen):</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">mkcert -install
+mkcert vaultwarden.lan 192.168.178.50</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>➜ erzeugt:</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Zertifikat: <code>vaultwarden.lan.pem</code></p>
+</li>
+<li>
+<p>Key: <code>vaultwarden.lan-key.pem</code></p>
+</li>
+<li>
+<p>Root-CA im Betriebssystem installiert</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>FritzBox DNS-Rebind anpassen
+Lege den Hostnamen intern fest:</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>FritzBox → <strong>Heimnetz</strong> → <strong>Netzwerk</strong></p>
+</li>
+<li>
+<p>Deinem Unraid-Server einen Namen geben, z. B. <code>unraid.lan</code></p>
+</li>
+<li>
+<p>Falls <code>.lan</code> Probleme macht, alternativ <code>.lan</code> verwenden (<code>unraid.lan</code>)</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Vaultwarden-Container mit Zertifikaten starten
+Im Unraid-Docker-Template:</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>WEB_VAULT_ENABLED=true
+ROCKET_TLS={certs="/data/vaultwarden.lan.pem",key="/data/vaultwarden.lan-key.pem"}</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Die Zertifikate vorher nach
+`/mnt/user/appdata/vaultwarden/` kopieren.</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Im Browser-Plugin Hintergrund-Domain ändern
+In den Bitwarden-Plugin-Einstellungen:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>„Selbstsigniertes Zertifikat zulassen“</p>
+</li>
+<li>
+<p>URL setzen auf <code><a href="https://vaultwarden.lan" class="bare">https://vaultwarden.lan</a></code></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Vorteile</div>
+<ul>
+<li>
+<p>Funktioniert offline, ohne Cloud</p>
+</li>
+<li>
+<p>Voll kompatibel mit dem Browser-Plugin</p>
+</li>
+<li>
+<p>Sicherheit wie bei professionellen internen Installationen</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Nachteile</div>
+<ul>
+<li>
+<p>Root-CA muss auf allen Geräten importiert werden (PC, Handy usw.)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"><a class="anchor" href="#2-lokale-dns-domain-reverse-proxy-lets-encrypt-dns-challenge"></a>A.2.2. 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)</h4>
+<div class="paragraph">
+<p><em>(die Profi-Lösung mit „echten“ Zertifikaten ohne öffentliche IP)</em></p>
+</div>
+<div class="ulist">
+<div class="title">Benötigt</div>
+<ul>
+<li>
+<p>Eigene Domain (z. B. IONOS, Strato, Cloudflare)</p>
+</li>
+<li>
+<p>Zugriff auf die DNS-Konfiguration</p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<div class="title">Schritte</div>
+<ol class="arabic">
+<li>
+<p>Domain kaufen (Beispiel: <code>schubert-home.de</code>)</p>
+</li>
+<li>
+<p>Subdomain anlegen: <code>vaultwarden.schubert-home.de</code></p>
+</li>
+<li>
+<p>DNS-Challenge konfigurieren (z. B. Cloudflare-API oder IONOS-API)</p>
+</li>
+<li>
+<p>In Unraid Zertifikat automatisch erzeugen:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>SWAG (Let’s-Encrypt-Container)</p>
+</li>
+<li>
+<p>oder Caddy (DNS-01-Challenge)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Reverse-Proxy leitet intern auf Vaultwarden weiter</p>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<div class="title">Vorteile</div>
+<ul>
+<li>
+<p>Echte Let’s-Encrypt-Zertifikate</p>
+</li>
+<li>
+<p>Automatische Erneuerung</p>
+</li>
+<li>
+<p>Keine CA-Installation auf Clients nötig</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Nachteile</div>
+<ul>
+<li>
+<p>Domain erforderlich</p>
+</li>
+<li>
+<p>Einrichtung etwas komplexer</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="3-traefik-oder-caddy-als-interner-proxy-interne-ca"><a class="anchor" href="#3-traefik-oder-caddy-als-interner-proxy-interne-ca"></a>A.2.3. 3. Traefik oder Caddy als interner Proxy + interne CA</h4>
+<div class="paragraph">
+<p><em>(ideal bei mehreren internen Diensten)</em></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Caddy- oder Traefik-Container installieren</p>
+</li>
+<li>
+<p>Dienst <code>vaultwarden.lan</code> als Backend konfigurieren</p>
+</li>
+<li>
+<p>Caddy kann automatisch interne Zertifikate erzeugen</p>
+</li>
+<li>
+<p>Interne CA im Browser-Plugin importieren</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Vorteile</div>
+<ul>
+<li>
+<p>Ideal für Homeserver mit vielen Diensten</p>
+</li>
+<li>
+<p>Sehr elegante Konfiguration mit Caddy</p>
+</li>
+<li>
+<p>Keine manuelle Zertifikatsverwaltung</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Nachteile</div>
+<ul>
+<li>
+<p>Gewisse Lernkurve</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="#">Zurück zur Übersicht</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_script_backup"><a class="anchor" href="#_script_backup"></a>Appendix B: Skript Backup</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="motivation-3"><a class="anchor" href="#motivation-3"></a>B.1. Motivation</h3>
+<div class="paragraph">
+<p>Einige Backup Aufgaben dauern sehr lange und werden lieber Nutzerspezifisch ausgelegt.
+Für mich habe ich unter der Kategorie folgende Aktionen identifiziert:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Kopieren der Sync Verzeichnisse in eine unkomprimierte Backup Ablage</p>
+</li>
+<li>
+<p>Kopieren der Dateien aus der Backup Ablage auf eine externe HDD ohne Komprimierung</p>
+</li>
+<li>
+<p>Kopieren der Dateien auf einer externen HDD in ein anderes Verzeichnis der gleichen HDD (Duplizieren)</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="konzept-5"><a class="anchor" href="#konzept-5"></a>B.2. Konzept</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Der aktuelle Datenstand wird über Resilio Sync über diverse Devices synchron aktuell gehalten.</p>
+</li>
+<li>
+<p>Es gibt einen exponierten Backupserver auf dem alle synchronisierten Verzeichnisse abliegen und in sync gehalten werden.</p>
+</li>
+<li>
+<p>Der Backupserver verfügt über ein separates Share in welches ein Snapshot aller synchronisierten Verzeichnisse abgelegt werden kann.</p>
+</li>
+<li>
+<p>Der Backupserver verfügt über die Möglichkeit externe HDDs als echten Backupspeicher anschließen zu können.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_vorbetrachtungen_zur_l_sung"><a class="anchor" href="#_vorbetrachtungen_zur_l_sung"></a>B.3. Vorbetrachtungen zur Lösung</h3>
+<div class="paragraph">
+<p>Ich habe mit diversen Implementierungen von Skripten gearbeitet und dabei einige Erfahrungen gewonnen.Btw. wenn ich hier von zu archivierenden Daten rede, geht es immer um ca. 2 TB die am Stück zu sichern sind.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ich nehme keine gepackten Archive mehr, sondern kopiere flach.Das Kopieren dauert bei 2 TB
+Archiv mehrere Tage und bei einem Abbruch beginnt man bei einem Archiv von vorn egal ob copy oder rsync Befehl.</p>
+</li>
+<li>
+<p>Nimm niemals den copy Befehl.Zunächst habe ich die Kopien per copy Befehl mit diversen Argumenten -a oder -R
+genutzt.Das bringt nix, da der Kopiervorgang bei 2 TB mehrere Tage dauert.Ein Abbruch und Du beginnst von vorn,
+weil der Befehl nicht weiß wo er neu aufsetzen soll.</p>
+</li>
+<li>
+<p>Nimm rsync das kann nach einem Abbruch neu aufsetzen und kopiert auch nur die Deltas, was eine extreme Zeitersparnis
+darstellt, wenn ein bestehendes Backup nur aktualisiert werden soll.</p>
+</li>
+<li>
+<p>Exkludiere die .sync Ordner von resilio Sync. Resilio speichert in diesen Ordnern zum Teil
+Gigabyte große Kopien der synchronisierten Originale. Das kam unerwartet und daher habe ich
+die Ordner sofort aus dem Kopiervorgang rausgenommen. Hat auch den Vorteil, dass kein System
+denkt der Zielordner wäre Teil einer Synchronisation.</p>
+</li>
+<li>
+<p>Schreibe ein LOCKFILE wenn das Skript läuft um ein Doppelstart zu verhindern.</p>
+</li>
+<li>
+<p>Reagiere im Skript per trap auf TERM und INT Signale um z.B. das Lockfile wieder wegzuräumen.</p>
+</li>
+<li>
+<p>Überlege den Kopiervorgang zu parallelisieren. Doch bedenke, es gibt auch Nachteile. rsync arbeitet single Threaded
+aber über die Kombination mit find und xargs kann man mehrere "Pseudo-Threads" erzeugen. Doch beachte, dass Deine
+Aufräumlogik hier Probleme bekommt. Bei einem Abbruch über Unraid, müssen alle "Threads" gekillt werden. Das hat bei
+mir nie geklappt und immer komisches Verhalten erzeugt, da man es ja erst nach ps -xa gesehen hat, dass noch alte
+Teile laufen und kopieren. Darum habe ich final keine Parallelität mehr genutzt.</p>
+</li>
+<li>
+<p>Kopiere möglichst auf eine andere Platte und nicht auf die gleiche Platte - Stichwort Head Thrashing oder
+Seek Thrashing oder Disk Thrashing. Kopieren auf andere PLatten geht immer schneller und verringert die
+Abnutzung der Platten. Der Kopf ist beim Kopieren auf derselben Platte nur am Hin- und Herspringen.
+Parallelisierung verschlimmert die Sache nur noch mehr. Ein Journaling File System wirkt sich in dem Fall auch
+nicht günstig aus. Wenn also die guten Sachen zur Bremse werden, dann macht man was falsch. Darum Journaling FS
+ist super, Lesen und Schreiben auf der gleichen Platte ist schlecht.</p>
+</li>
+<li>
+<p>Vermerke im Ziel den Erfolg oder Misserfolg sowie das Datum des gelaufenen oder abgebrochenen Backups. Es ist
+immer gut wenn man nach Monaten mal auf den Backupfolder schaut und denkt oooch der Size passt ja und dann sieht,
+uuups das letzte Mal vor Wochen erfolgreich. Allein über den Platz merkt man das meist gar nicht so schnell und
+wer schaut schon die Liste der letzten 30 Läufe durch?</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="lösung"><a class="anchor" href="#lösung"></a>B.4. Lösung</h3>
+<div class="paragraph">
+<p>Für die Daten Backups nutze ich die Unraid App "User Scripts" von Andrew Zawadzki. Die App ist kein Docker Container
+sondern scheinbar nur ein Unraid Plugin.</p>
+</div>
+<div class="paragraph">
+<p>Die folgenden Skripte, sind die Skripte welche ich selbst nutze. Diese muss natürlich jeder an seine eigene Umgebung
+anpassen bzw. nach den eigenen Bedürfnissen funktional überarbeiten oder kann sie einfach auch nur als Ideenspende
+nutzen. Was nicht funktionieren wird ist - kopieren und laufen lassen. Das geht mit Sicherheit schief.</p>
+</div>
+<div class="paragraph">
+<p>Auch stellen die Skripte einen aktuellen Arbeitsstand dar, sind also weder konsolidiert noch optimiert. Daher ist es
+sehr sinnvoll, vor ihrer Nutzung ihre Logik und Arbeitsweise zu verstehen.</p>
+</div>
+<div class="paragraph">
+<p>Das Logging habe ich nicht elegant gelöst bekommen - wer da Tipps hat, gern mal Bescheid geben oder einen PR stellen
+ - Danke.</p>
+</div>
+<div class="sect3">
+<h4 id="backup-stuff-in-backupfolder"><a class="anchor" href="#backup-stuff-in-backupfolder"></a>B.4.1. Backup Stuff in Backupfolder</h4>
+<div class="paragraph">
+<p>Erstellt einen Snapshot vom Medien oder Dokumenten Ordner.</p>
+</div>
+<div class="listingblock">
+<div class="title">backup-stuff.sh</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+set -euo pipefail
+
+# Konfiguration
+SRC="/mnt/user/ablagen/folders/ResilioSync/"
+DST="/mnt/user/backup-stuff"
+INFOFILE="${DST}/backup-info.txt"
+DATEFILE="${DST}/backup-date.txt"
+LOG_DIR="/mnt/user/logs/backup-stuff"
+LOGFILE="${LOG_DIR}/backup-stuff_$(date '+%Y%m%d_%H%M%S').log"
+LOCKFILE="/tmp/backup_stuff.lock"
+
+# Zielverzeichnis anlegen
+mkdir -p "$LOG_DIR"          # sonst scheitert: tee: ... No such file or directory
+mkdir -p "$DST"              # erstellt den kompletten Zielpfad inkl. Datum
+
+
+# Signal-Handler und Aufräumroutine
+cleanup() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✋ Backup-Skript abgebrochen durch Signal (SIGINT/SIGTERM)" | tee -a "$LOGFILE"
+    rm -f "$LOCKFILE"
+    exit 1
+}
+trap cleanup INT TERM
+
+# Lockfile prüfen und setzen
+if [[ -f "$LOCKFILE" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️  Backup läuft bereits (Lockfile gefunden: $LOCKFILE). Abbruch." | tee -a "$LOGFILE"
+    exit 2
+fi
+echo $$ &gt; "$LOCKFILE"
+
+# Bei erfolgreichem oder abgebrochenem Lauf Lockfile entfernen
+finish() {
+    rm -f "$LOCKFILE"
+}
+trap finish EXIT
+
+# Backup starten
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] === Backup gestartet ===" | tee -a "$LOGFILE"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starte rsync Backup..." | tee -a "$LOGFILE"
+rsync -a --delete --info=progress2 --no-compress \
+    --exclude='.sync/' \
+    "$SRC" "$DST"
+
+# Backup-Info schreiben
+BACKUP_TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
+echo "Backup abgeschlossen am: $BACKUP_TIMESTAMP" &gt; "$INFOFILE"
+echo "[$BACKUP_TIMESTAMP] ✅ Backup erfolgreich abgeschlossen." | tee -a "$LOGFILE"
+
+# Backup-Date schreiben
+BACKUP_DATE="$(date '+%Y-%m-%d')"
+echo "$BACKUP_DATE" &gt; "$DATEFILE"
+
+
+exit 0</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="backup-stuff-auf-hdd"><a class="anchor" href="#backup-stuff-auf-hdd"></a>B.4.2. Backup Stuff auf HDD</h4>
+<div class="paragraph">
+<p>Erstellt einen Snapshot vom Backup Ordner auf ein externes Laufwerk.</p>
+</div>
+<div class="listingblock">
+<div class="title">cp_backup2hdd_stuff.sh</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+set -euo pipefail
+
+# Konfiguration
+SRC="/mnt/user/backup-stuff/"
+DST="/mnt/disks/USB_STORAGE/backup/stuff"
+INFOFILE="${DST}/backup-info.txt"
+DATEFILE="${DST}/backup-date.txt"
+LOGFILE="/mnt/user/logs/hdd-backup-stuff.log"
+LOCKFILE="/tmp/backup2hdd-stuff.lock"
+
+# Zielverzeichnis anlegen
+mkdir -p "$DST"
+
+# Signal-Handler und Aufräumroutine
+cleanup() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✋ Backup-Skript abgebrochen durch Signal (SIGINT/SIGTERM)" | tee -a "$LOGFILE"
+    rm -f "$LOCKFILE"
+    exit 1
+}
+trap cleanup INT TERM
+
+# Lockfile prüfen und setzen
+if [[ -f "$LOCKFILE" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️  Backup läuft bereits (Lockfile gefunden: $LOCKFILE). Abbruch." | tee -a "$LOGFILE"
+    exit 2
+fi
+echo $$ &gt; "$LOCKFILE"
+
+# Bei erfolgreichem oder abgebrochenem Lauf Lockfile entfernen
+finish() {
+    rm -f "$LOCKFILE"
+}
+trap finish EXIT
+
+# Backup starten
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] === Backup gestartet ===" | tee -a "$LOGFILE"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starte rsync Backup..." | tee -a "$LOGFILE"
+rsync -a --delete --info=progress2 --no-compress \
+    --exclude='.sync/' \
+    "$SRC" "$DST"
+
+# Backup-Info schreiben
+BACKUP_TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
+echo "Backup abgeschlossen am: $BACKUP_TIMESTAMP" &gt; "$INFOFILE"
+echo "[$BACKUP_TIMESTAMP] ✅ Backup erfolgreich abgeschlossen." | tee -a "$LOGFILE"
+
+# Backup-Date schreiben
+BACKUP_DATE="$(date '+%Y-%m-%d')"
+echo "$BACKUP_DATE" &gt; "$DATEFILE"
+
+
+exit 0</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dupliziere-archive-auf-hdd"><a class="anchor" href="#dupliziere-archive-auf-hdd"></a>B.4.3. Dupliziere Archive auf HDD</h4>
+<div class="paragraph">
+<p>Dupliziert einen Folder auf einer externen HDD - nur in Ausnahmefällen nutzen!</p>
+</div>
+<div class="listingblock">
+<div class="title">cp_hdd2hdd_archive.sh</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+set -Eeuo pipefail
+
+SRC="/mnt/disks/USB_STORAGE/backup/"
+DST="/mnt/disks/USB_STORAGE/archive"
+INFOFILE="${DST}/cp_backup-info.txt"
+DATEFILE="${DST}/cp_backup-date.txt"
+LOGDIR="/mnt/user/logs/cp_hdd2hdd_archive"
+LOGFILE="${LOGDIR}/cp_backup2archive.log"
+LOCKFILE="/tmp/cp_hdd2hdd_archive.lock"
+# PARTIAL_DIR="${DST}/.rsync-partial"
+
+mkdir -p "$DST" "$LOGDIR"
+
+ts() { date '+%Y-%m-%d %H:%M:%S'; }
+
+if [[ -f "$LOCKFILE" ]]; then
+  echo "[$(ts)] ⚠️  Backup läuft bereits (Lockfile gefunden). Abbruch." | tee -a "$LOGFILE"
+  exit 2
+fi
+echo $$ &gt; "$LOCKFILE"
+
+finish() { rm -f "$LOCKFILE"; }
+trap finish EXIT
+
+on_signal() {
+  echo "[$(ts)] ✋ Signal empfangen – breche ab…" | tee -a "$LOGFILE"
+  # Bei single-rsync reicht ein normales Exit; rsync beendet sich durch das Signal mit.
+  exit 1
+}
+trap on_signal INT TERM
+
+echo "[$(ts)] === Backup gestartet ===" | tee -a "$LOGFILE"
+echo "[$(ts)] Quelle: $SRC" | tee -a "$LOGFILE"
+echo "[$(ts)] Ziel:   $DST" | tee -a "$LOGFILE"
+
+# Ein einzelner rsync-Stream (schnellste Variante auf derselben Platte)
+rsync -aHAX --numeric-ids \
+  --delete --delete-delay --delay-updates \
+  --whole-file \
+  --partial \
+  --no-compress \
+  --info=progress2,stats2 --human-readable \
+  --exclude='.sync/' \
+  -- "$SRC" "$DST" | tee -a "$LOGFILE"
+
+BACKUP_TIMESTAMP="$(ts)"
+echo "Backup abgeschlossen am: $BACKUP_TIMESTAMP" &gt; "$INFOFILE"
+echo "[$(ts)] ✅ Backup erfolgreich abgeschlossen." | tee -a "$LOGFILE"
+date '+%Y-%m-%d' &gt; "$DATEFILE"
+exit 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="#">Zurück zur Übersicht</a></p>
+</div>
 </div>
 </div>
 </div>

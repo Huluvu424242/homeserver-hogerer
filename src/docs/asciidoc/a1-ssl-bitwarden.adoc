@@ -1,0 +1,116 @@
+:imagesdir: ./images
+[appendix]
+
+== SSL-Konfiguration für Vaultwarden
+
+=== Motivation
+
+Seit dem neuesten Update des Bitwarden-Browser-Plugins lassen sich nur noch
+verschlüsselte Verbindungen zum Vaultwarden-Server herstellen.
+Damit muss dieser zwingend über ein SSL-Zertifikat verfügen,
+um das HTTPS-Protokoll zu unterstützen.
+
+=== Konzept
+
+Aus meiner Sicht gibt es drei Lösungsmöglichkeiten:
+
+==== 1. Self-Signed-Zertifikat + lokale Root-CA installieren
+
+_(die sicherste und sauberste Lösung im Heimnetz)_
+
+.Schritte
+. Eigenes Root-CA erstellen
+  Auf deinem PC oder direkt in Unraid kannst du eine Root-CA generieren,
+  z. B. mit *mkcert* oder *OpenSSL*.
+
+  Beispiel mit *mkcert* (empfohlen):
+
+[source,shell]
+----
+mkcert -install
+mkcert vaultwarden.lan 192.168.178.50
+----
+
+  ➜ erzeugt:
+
+  * Zertifikat: `vaultwarden.lan.pem`
+  * Key: `vaultwarden.lan-key.pem`
+  * Root-CA im Betriebssystem installiert
+
+. FritzBox DNS-Rebind anpassen
+  Lege den Hostnamen intern fest:
+
+  * FritzBox → *Heimnetz* → *Netzwerk*
+  * Deinem Unraid-Server einen Namen geben, z. B. `unraid.lan`
+  * Falls `.lan` Probleme macht, alternativ `.lan` verwenden (`unraid.lan`)
+
+. Vaultwarden-Container mit Zertifikaten starten
+  Im Unraid-Docker-Template:
+
+[source]
+----
+WEB_VAULT_ENABLED=true
+ROCKET_TLS={certs="/data/vaultwarden.lan.pem",key="/data/vaultwarden.lan-key.pem"}
+----
+
+  Die Zertifikate vorher nach
+  `/mnt/user/appdata/vaultwarden/` kopieren.
+
+. Im Browser-Plugin Hintergrund-Domain ändern
+  In den Bitwarden-Plugin-Einstellungen:
+
+  * „Selbstsigniertes Zertifikat zulassen“
+  * URL setzen auf `https://vaultwarden.lan`
+
+.Vorteile
+* Funktioniert offline, ohne Cloud
+* Voll kompatibel mit dem Browser-Plugin
+* Sicherheit wie bei professionellen internen Installationen
+
+.Nachteile
+* Root-CA muss auf allen Geräten importiert werden (PC, Handy usw.)
+
+==== 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)
+
+_(die Profi-Lösung mit „echten“ Zertifikaten ohne öffentliche IP)_
+
+.Benötigt
+* Eigene Domain (z. B. IONOS, Strato, Cloudflare)
+* Zugriff auf die DNS-Konfiguration
+
+.Schritte
+. Domain kaufen (Beispiel: `schubert-home.de`)
+. Subdomain anlegen: `vaultwarden.schubert-home.de`
+. DNS-Challenge konfigurieren (z. B. Cloudflare-API oder IONOS-API)
+. In Unraid Zertifikat automatisch erzeugen:
+  * SWAG (Let’s-Encrypt-Container)
+  * oder Caddy (DNS-01-Challenge)
+. Reverse-Proxy leitet intern auf Vaultwarden weiter
+
+.Vorteile
+* Echte Let’s-Encrypt-Zertifikate
+* Automatische Erneuerung
+* Keine CA-Installation auf Clients nötig
+
+.Nachteile
+* Domain erforderlich
+* Einrichtung etwas komplexer
+
+==== 3. Traefik oder Caddy als interner Proxy + interne CA
+
+_(ideal bei mehreren internen Diensten)_
+
+* Caddy- oder Traefik-Container installieren
+* Dienst `vaultwarden.lan` als Backend konfigurieren
+* Caddy kann automatisch interne Zertifikate erzeugen
+* Interne CA im Browser-Plugin importieren
+
+.Vorteile
+* Ideal für Homeserver mit vielen Diensten
+* Sehr elegante Konfiguration mit Caddy
+* Keine manuelle Zertifikatsverwaltung
+
+.Nachteile
+* Gewisse Lernkurve
+
+xref:index.adoc[Zurück zur Übersicht]
