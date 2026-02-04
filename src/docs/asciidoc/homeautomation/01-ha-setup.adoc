@@ -1,0 +1,78 @@
+:imagesdir: ./images
+
+== Home Automation
+
+=== Motivation
+
+Für Home Automation habe ich mich prinzipiell schon immer interessiert, sah eine echte Beschäftigung damit aber als verfrüht an, da es zu viele Systeme, Protokolle und Inkompatibilitäten gab.  Beim Kauf meiner
+letzten FritzBox 7690 stellte ich aber fest, dass sich unter dem Punkt SmartHome nicht mehr DECT befand sondern nun auch von Zigbee die Rede war. Daher hielt ich die Zeit für gekommen nun doch einen intensiveren Blick auf die Home Automatisierung zu werfen.
+
+=== Grundlagen
+
+Zunächst zu den Protokollen. Es gibt viele Dinge wie Tuya mit der Smart Life App, die zwar einen guten und preiswerten Einstieg bieten aber letztlich später nicht mehr mit ausgereiften Systemen kompatible sind.
+
+**Tuya Smart Life** ist eine Cloud Lösung die lokal recht gut funktioniert aber wirklich nur für den Einstieg. Es gibt eine Integration in den Homeassistanten (HA) von daher muss man später nicht alles wegwerfen. Die Cloud Lösung bedingt aber, dass man die Geräte mur aus dem WLAN heraus bedienen kann in dem man sie gekoppelt hat bzw. die Synchronisation der Daten halt über die Cloud laufen muss. Cloud kostet irgendwann bei jedem Anbieter Geld - so die Erfahrung. Daher nutze ich keine Cloud Lösungen. Ganz abgesehen vom mangelnden Datenschutz.
+
+**Zigbee** ein etabliertes Protokoll zu dem es sehr viele Geräte gibt. Es basiert auf Funk im 2,4 GHz Bereich (also Konkurrenz zum WLAN) und ist so designed, dass es zum WLAN ein paralleles eigenes  Netz
+aufspannt, welches absolut nix mit dem WLAN zu tun hat. Die Stärken des Protokolls liegen darin, dass
+die Geräte nur bei Änderungen z.B. Temperaturänderungen sich kurz mit dem Zigbee Cluster verbinden und ihre Daten broadcasten. Anschließend legen sie sich wieder schlafen. Das spart Batterie. Einige Zigbee
+Geräte können Repeater Aufgaben übernehmen - in der Regel sind das stromgebundene Geräte wie Schaltsteckdosen. Über den Broadcast entstehen beliebige Routen wodurch die Wege optimiert werden können.
+In der Praxis ist erstaunlich wie weit das Netz recht obgleich meine 3 Raum Wohnung wirklich mit WLAN Repeatern zugestellt ist und damit kaum Bandbreite für Zigbee bleibt.
+
+Vom Wifi profitiert Zigbee nur wenig, da es kein IP basiertes Protokoll ist und evtl. vorhandene Bridges
+die Pakete komplett as is durchs Wifi schicken müssen.
+
+Zum Betrieb von Zigbee benötigt es einige Dinge.
+Wenn Du denkst Du kannst einen Zigbee Schalter kaufen und eine Zigbee Lampe und dann mit dem Schalter die
+Lampe schalten, dann hast Du Dich geirrt. Du brauchst noch eine Steuerzentrale - die brauchen alle anderen
+Home Automation Lösungen später auch - und es gibt eine sehr schöne, freie open source Lösung -> den
+Home Assistant. Dieses Stück Software ist Deine Steuerzentrale, sie läuft bei mir auf einem unraid Server
+im Docker Container. Es gibt aber auch preiswert fertige Hardwareboxen für die gleiche Lösung.
+
+Der HA benötigt eine Verbindung zum Zigbee Cluster wofür men in der Regel ein USB Doongle benötigt. Ich habe mich für ein preiswertes SONOFF Zigbee Doongle entschieden. Geliebäugelt hatte ich eigentlich mit
+dem SkyConnect Doongle aber das konte ich mir zunächst nicht leisten. Manche Doongle wie alte SkyConnect
+Doongles unterstützen den Parallelbetrieb von Zigbee und Thread. Dieser Parallelbetrieb auf einer Antenne
+hat sich später als anfällig für Interferenzen gezeigt und sollte nicht genutzt werden. Mit 2 Antennen
+liegen mir keine Erfahrungen vor aber laut der Therorie sollte dann jede Funkart ihre eigene Antenne haben und es sollte damit auf der Antenne selbst nicht zu Interferenzen kommen.
+
+Wenn man nun also einen HA laufen hat welche über ein Doongle Zugriff auf das Zigbee Cluster hat, so kann man nun Geräte im Zigbee Cluster registrieren. Im Kontext der Home Automation wird dieser Vorgang scheinbar stets anlernen genannt (warum auch immer).
+
+Wenn Geräte im Zigbee Cluster angemeldet sind können im HA Automatisierungen eingerichtet werden, so dass
+der Schalter z.B. weiß welche Lampe er schalten soll. Ab da hat man ein funktionierendes System.
+
+**Thread** Nach Zigbee wurde Thread geschaffen. Es macht das gleiche wie Zigbee, ist aber ein anderes
+Protokoll. Der wichtigste Unterschied: es ist IP basiert. Damit kann es von Wifi Netzen profitieren.
+Auch bei Thread wird eine Steuerzentrale wie der HA und ein Doongle wie SkyConnect benötigt.
+
+**Matter** Ist das High End Protokoll die angestrebte Vision mit der sich Zigbee und Thread Geräte nutzen lassen. Hierzu wird auch eine Steuerzentrale wie der HA benötigt und dann gibt es die Betriebsarten Matter over Zigbee, Matter over Wifi, Matter over Thread. Da mein HA auf unraid läuft und somit über LAN an einen WLAN Repeater gekoppelt ist, gibt es Probleme beim pairen von Matterfähigen Geräten. Das Pairung
+funktioniert wohl aktuell nur sicher per WLAN aber ein WLAN Adapter wäre keine Lösung am unraid Server es wäre eher eine Verschlimmbesserung die auch nicht geht. Darum habe ich mir pragmatisch einfach einen Google Nest Hub 2. Generation (das ist wichtig - die 1. geht dafür nicht) gekauft. Beim Nest Hub habe ich das Mikro ausgeschalten und die Clouddienste deaktiviert und nutze ihn als Matter Controller. Dieser ist in der Lage Matter Geräte per Wifi zu pairen. Anschließend sind diese im Netz bekannt und der HA kann sie integrieren. Ich arbeite also mit Matter over Wifi.
+
+**IP Camera**s werden notwendig wenn man 2 WLAN Netze besitzt und nix über Cloud machen möchte.
+Beispielsweise habe ich ein WLAN Netz im Wochenendhaus und ein WLAN Netz in meiner Wohnung. Beide Orte
+liegen 2h Fahrt auseinander, da ist also nix mit mal fix eben an der andere FritzBox den Bestätigungsknopf
+drücken. Um das zu stemmen ist es zwingend notwendig die FritzBoxen per wireguard zu verbinden und um das
+zu können benötigt man vorher an jeder Fritzbox einen Nutzer mit Authenticator Absicherung und Zugriffsrecht über Internet und myfritz Lösung. Dann ist man in der Lage beide Netze zu verwalten (die
+IP Adressräume müssen natürlich auch umgestellt sein z.B. auf 192.168.1.x und 192.168.2.x).
+
+Damit die IP Camera nun in das System integriert werden kann, benötigt man noch ein paar weitere Container zur Unterstützung des HA Containers. Ich habe folgende zusätzliche Container auf unraid eingerichtet:
+
+- **mosquitto** Ist eine Art Message Broker und verteilt die empfangenen Ereignisse.
+- **zigbee2mqtt** Bietet Zigbee Support und entlastet den HA
+- **frigate** Verarbeitet die Kameradaten und benötigt Storage für die Videosequenzen und Snapshots
+- **matter-server** Eine Matter Integration mit der ich bereits im System registrierte matterfähige
+Geräte nutzen kann.
+
+Soweit zu den Grundlagen und der Beschreibung meines aktuellen Systems.
+
+
+
+
+
+
+
+
+
+
+
+
+* xref:index.adoc[Zurück zur Übersicht]
