@@ -32,6 +32,12 @@ include::03-thinclient.adoc[]
 
 include::04-thinclients.adoc[]
 
+:appendix:
+
+include::a1-ssl-bitwarden.adoc[]
+
+include::a2-script-backup.adoc[]
+
 
 
 // ## Metadaten

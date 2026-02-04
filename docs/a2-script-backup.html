@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.16">
-<title>Variante 1 mit Raspi</title>
+<title>Skript Backup</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -443,11 +443,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#variante-1-mit-raspi">Variante 1 mit Raspi</a>
+<li><a href="#_script_backup">Appendix A: Skript Backup</a>
 <ul class="sectlevel2">
+<li><a href="#motivation">Motivation</a></li>
 <li><a href="#konzept">Konzept</a></li>
-<li><a href="#inhalte">Inhalte</a></li>
-<li><a href="#backupkonzept">Backupkonzept</a></li>
+<li><a href="#_vorbetrachtungen_zur_l_sung">Vorbetrachtungen zur Lösung</a></li>
+<li><a href="#lösung">Lösung</a></li>
 </ul>
 </li>
 </ul>
@@ -455,140 +456,317 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="variante-1-mit-raspi"><a class="anchor" href="#variante-1-mit-raspi"></a>Variante 1 mit Raspi</h2>
+<h2 id="_script_backup"><a class="anchor" href="#_script_backup"></a>Appendix A: Skript Backup</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="konzept"><a class="anchor" href="#konzept"></a>Konzept</h3>
+<h3 id="motivation"><a class="anchor" href="#motivation"></a>Motivation</h3>
 <div class="paragraph">
-<p>Die Idee war einfach. Nachdem ich einige Versuche mit resilio Sync unternommen hatte ein paar Verzeichnisse zwischen meinen Laptops, Handies und Tablets zu synchronisieren, wollte ich einen "Master" Server haben gegen den alle Geräte synchronisiert werden.</p>
+<p>Einige Backup Aufgaben dauern sehr lange und werden lieber Nutzerspezifisch ausgelegt.
+Für mich habe ich unter der Kategorie folgende Aktionen identifiziert:</p>
 </div>
-<div class="paragraph">
-<p>Der Server brauchte nicht viel Leistung, denn die Synchronisation konnte ja wie bisher direkt zwischen den Geräten erfolgen und er selbst konnte gern langsam alle Änderungen nachziehen. Wichtig war nur wo der korrekte und vollständige Datenbestand zum Schluss liegen sollte - nämlich beim "Master"-Server. Für resiliosync hatte ich eine einfache Lizenz gekauft und zu der Technologie hatte ich Vertrauen,da das bittorrent Protokoll genutzt wurde und es entweder eine Art Nachfolger war oder die Leute welche die Software bereistellten auch schon bittorrent erdacht hatten.</p>
-</div>
-<div class="paragraph">
-<p>Da keine große Leistung nötig war, suchte ich kurz ob es mit einem Raspi geht und ja es gab schon Lösungen also frisch ans Werk. Raspi aufgesetzt, resilio instaliert und USB Platte dran und fertig. Die Kombi lief über Jahre stabil und ich war zufrieden. Eigentlich hätte ich nix ändern müssen aber mir war nicht klar wie sicher bzw. Auffwändig meine Backupstrategie war. Immer wenn ich dachte, zog ich von der raspi Platte ein Backup und legte es auf einer anderen externen USB Platte ab. Das war auf jeden Fall nicht die sicherste Art. Letztlich war das Backup der Punkt weshalb ich immer am überlegen war, wie ich das sicherer gestalten kann.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="inhalte"><a class="anchor" href="#inhalte"></a>Inhalte</h3>
-<div class="paragraph">
-<p>Nur zum Verständnis hier noch einen kurzen Einschub was ich speicherte und wo und dann wie konkret ich meine Backups durchführte.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="./images/Verzeichnisliste.png" alt="Verzeichnisliste" title="Verzeichnisliste"></span></p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">ablage-sync</dt>
-<dd>
-<p>Dinge wie eingesannte Verträge von Stromversorgern oder Betriebskostenabrechnungen etc.</p>
-</dd>
-<dt class="hdlist1">ahnen-sync</dt>
-<dd>
-<p>Urkunden und Nachweise meiner Vorfahren zum Zwecke der Ahnenforschung.</p>
-</dd>
-<dt class="hdlist1">backup-sync</dt>
-<dd>
-<p>Zwischenspeicher für Backups</p>
-</dd>
-<dt class="hdlist1">books-sync</dt>
-<dd>
-<p>calibre Bibliothek</p>
-</dd>
-<dt class="hdlist1">dev-sync</dt>
-<dd>
-<p>bare clone der github repos + sicherungen spezieller software die man nicht mehr bekommt.</p>
-</dd>
-<dt class="hdlist1">filme-sync</dt>
-<dd>
-<p>Kopien gekaufter Filme und Downloads von youtube Videos</p>
-</dd>
-<dt class="hdlist1">foto-sync</dt>
-<dd>
-<p>Meine Fotos - ganz wenige, da ich generell flickr als meinen master nutze</p>
-</dd>
-<dt class="hdlist1">freiebilder-sync</dt>
-<dd>
-<p>Diverse erstellt Diagramme oder Bilder für Entwicklungsprojekte oder Präsentationen</p>
-</dd>
-<dt class="hdlist1">gramps-sync</dt>
-<dd>
-<p>Sicherung eines Stammbaumes (nicht mehr aktiv in Arbeit)</p>
-</dd>
-<dt class="hdlist1">input-sync</dt>
-<dd>
-<p>Input Kanal von allen Geräte zur Bearbeitung eingereicht: also TODO Kanal</p>
-</dd>
-<dt class="hdlist1">käufe</dt>
-<dd>
-<p>Diverse gekaufte Dinge wie amazon mp3 Lieder etc.</p>
-</dd>
-<dt class="hdlist1">lieder-sync</dt>
-<dd>
-<p>Entwicklungsprojekte mit Noten, midi etc.</p>
-</dd>
-<dt class="hdlist1">lizenzen-sync</dt>
-<dd>
-<p>Kopien meiner erworbenen Lizenzen</p>
-</dd>
-<dt class="hdlist1">music-sync</dt>
-<dd>
-<p>audio-expert Bibliothek</p>
-</dd>
-<dt class="hdlist1">musikvideos-sync</dt>
-<dd>
-<p>youtube Videos von alten Songs der 80er als die Videos gerade aufkamen.</p>
-</dd>
-<dt class="hdlist1">raspi-sync</dt>
-<dd>
-<p>Images für den raspi</p>
-</dd>
-<dt class="hdlist1">sylvia-ablage-sync</dt>
-<dd>
-<p>Familie</p>
-</dd>
-<dt class="hdlist1">sylvia-input</dt>
-<dd>
-<p>Familie</p>
-</dd>
-<dt class="hdlist1">tsc-private-sync</dt>
-<dd>
-<p>private Drafts und Schreibübungen etc.</p>
-</dd>
-<dt class="hdlist1">vm-images</dt>
-<dd>
-<p>virtual box images, mit os lizenzen die bezahlt wurden und daher aufgehobenn werden</p>
-</dd>
-<dt class="hdlist1">zugänge-sync</dt>
-<dd>
-<p>Zertifikate aller Art für den Zugriff auf andere Rechner oder Portale</p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Auf den mobilen Endgeräten wie Handy oder Tablet habe ich dann meist nur music-sync und input-sync drauf. So kann ich meine Musik auf ein mobiles Device syncen und dort offline abspielen. Hier kommt mir eine Eigenschaft von resilio sync zu Gute: mobile Geräte unterstützen selektives syncen, beim Desktop braucht man eine entsprechende Lizenz dafür.</p>
-</div>
-<div class="paragraph">
-<p>Auf einem Laptop hatte ich dann zunächst die Musik verwaltet mit audio-expert. Da liegt die ganze Musik dann komplett im Verzeichnis des Laptops. Das nimmt viel Platz ein. Beim nächsten Laptop kam dann noch das Bücherverzeichnis von calibre hinzu. Wenn ich jetzt noch Filme und Videos drauf verwalten wollte dann benötigt es so viel Platz, dass es nicht mehr auf einen Laptop passt. Daher war die Idee ein Laptop für Musik verwalten, ein Laptop für Bücher verwalten. Dann aber hast Du den Laptop für Bücher in der Hand und kaufst bei amazon spontan Musik und schon geht die musik in den input-sync und irgendwann erst setzt Du dich hin und kopierst die Dateien. Das war jedenfalls nicht praktisch.</p>
-</div>
-<div class="paragraph">
-<p>Mein Wunsch für die Zukunft wäre auch noch alle Filme und Videos mit Plex oder Jellyfin verwalten zu können.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="backupkonzept"><a class="anchor" href="#backupkonzept"></a>Backupkonzept</h3>
-<div class="paragraph">
-<p>Mein Backup bestand darin, nach individuellem Gefühl mal ein Backup von der Musik, den Videos, den Ahnen oder sonstigem zu ziehen. Man hat ja so in etwa im Gefühl wo im letzten Monat was dazu gekommen ist. Gepeichert habe ich es immer auf externen USB Festplatten. Je Thema eine Platte - damit ist klar, dass da einiges an Platten zusammen kam und der Überblick wieder genauso schnell weg war wie vor dem Ganzen.</p>
-</div>
-<div class="paragraph">
-<p>Daher suchte ich nach anderen Lösungen und ging in Richtung homeserver.</p>
-</div>
-<div class="ulist">
-<ul>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p><a href="index.html">Zurück zur Übersicht</a></p>
+<p>Kopieren der Sync Verzeichnisse in eine unkomprimierte Backup Ablage</p>
 </li>
-</ul>
+<li>
+<p>Kopieren der Dateien aus der Backup Ablage auf eine externe HDD ohne Komprimierung</p>
+</li>
+<li>
+<p>Kopieren der Dateien auf einer externen HDD in ein anderes Verzeichnis der gleichen HDD (Duplizieren)</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="konzept"><a class="anchor" href="#konzept"></a>Konzept</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Der aktuelle Datenstand wird über Resilio Sync über diverse Devices synchron aktuell gehalten.</p>
+</li>
+<li>
+<p>Es gibt einen exponierten Backupserver auf dem alle synchronisierten Verzeichnisse abliegen und in sync gehalten werden.</p>
+</li>
+<li>
+<p>Der Backupserver verfügt über ein separates Share in welches ein Snapshot aller synchronisierten Verzeichnisse abgelegt werden kann.</p>
+</li>
+<li>
+<p>Der Backupserver verfügt über die Möglichkeit externe HDDs als echten Backupspeicher anschließen zu können.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_vorbetrachtungen_zur_l_sung"><a class="anchor" href="#_vorbetrachtungen_zur_l_sung"></a>Vorbetrachtungen zur Lösung</h3>
+<div class="paragraph">
+<p>Ich habe mit diversen Implementierungen von Skripten gearbeitet und dabei einige Erfahrungen gewonnen.Btw. wenn ich hier von zu archivierenden Daten rede, geht es immer um ca. 2 TB die am Stück zu sichern sind.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ich nehme keine gepackten Archive mehr, sondern kopiere flach.Das Kopieren dauert bei 2 TB
+Archiv mehrere Tage und bei einem Abbruch beginnt man bei einem Archiv von vorn egal ob copy oder rsync Befehl.</p>
+</li>
+<li>
+<p>Nimm niemals den copy Befehl.Zunächst habe ich die Kopien per copy Befehl mit diversen Argumenten -a oder -R
+genutzt.Das bringt nix, da der Kopiervorgang bei 2 TB mehrere Tage dauert.Ein Abbruch und Du beginnst von vorn,
+weil der Befehl nicht weiß wo er neu aufsetzen soll.</p>
+</li>
+<li>
+<p>Nimm rsync das kann nach einem Abbruch neu aufsetzen und kopiert auch nur die Deltas, was eine extreme Zeitersparnis
+darstellt, wenn ein bestehendes Backup nur aktualisiert werden soll.</p>
+</li>
+<li>
+<p>Exkludiere die .sync Ordner von resilio Sync. Resilio speichert in diesen Ordnern zum Teil
+Gigabyte große Kopien der synchronisierten Originale. Das kam unerwartet und daher habe ich
+die Ordner sofort aus dem Kopiervorgang rausgenommen. Hat auch den Vorteil, dass kein System
+denkt der Zielordner wäre Teil einer Synchronisation.</p>
+</li>
+<li>
+<p>Schreibe ein LOCKFILE wenn das Skript läuft um ein Doppelstart zu verhindern.</p>
+</li>
+<li>
+<p>Reagiere im Skript per trap auf TERM und INT Signale um z.B. das Lockfile wieder wegzuräumen.</p>
+</li>
+<li>
+<p>Überlege den Kopiervorgang zu parallelisieren. Doch bedenke, es gibt auch Nachteile. rsync arbeitet single Threaded
+aber über die Kombination mit find und xargs kann man mehrere "Pseudo-Threads" erzeugen. Doch beachte, dass Deine
+Aufräumlogik hier Probleme bekommt. Bei einem Abbruch über Unraid, müssen alle "Threads" gekillt werden. Das hat bei
+mir nie geklappt und immer komisches Verhalten erzeugt, da man es ja erst nach ps -xa gesehen hat, dass noch alte
+Teile laufen und kopieren. Darum habe ich final keine Parallelität mehr genutzt.</p>
+</li>
+<li>
+<p>Kopiere möglichst auf eine andere Platte und nicht auf die gleiche Platte - Stichwort Head Thrashing oder
+Seek Thrashing oder Disk Thrashing. Kopieren auf andere PLatten geht immer schneller und verringert die
+Abnutzung der Platten. Der Kopf ist beim Kopieren auf derselben Platte nur am Hin- und Herspringen.
+Parallelisierung verschlimmert die Sache nur noch mehr. Ein Journaling File System wirkt sich in dem Fall auch
+nicht günstig aus. Wenn also die guten Sachen zur Bremse werden, dann macht man was falsch. Darum Journaling FS
+ist super, Lesen und Schreiben auf der gleichen Platte ist schlecht.</p>
+</li>
+<li>
+<p>Vermerke im Ziel den Erfolg oder Misserfolg sowie das Datum des gelaufenen oder abgebrochenen Backups. Es ist
+immer gut wenn man nach Monaten mal auf den Backupfolder schaut und denkt oooch der Size passt ja und dann sieht,
+uuups das letzte Mal vor Wochen erfolgreich. Allein über den Platz merkt man das meist gar nicht so schnell und
+wer schaut schon die Liste der letzten 30 Läufe durch?</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="lösung"><a class="anchor" href="#lösung"></a>Lösung</h3>
+<div class="paragraph">
+<p>Für die Daten Backups nutze ich die Unraid App "User Scripts" von Andrew Zawadzki. Die App ist kein Docker Container
+sondern scheinbar nur ein Unraid Plugin.</p>
+</div>
+<div class="paragraph">
+<p>Die folgenden Skripte, sind die Skripte welche ich selbst nutze. Diese muss natürlich jeder an seine eigene Umgebung
+anpassen bzw. nach den eigenen Bedürfnissen funktional überarbeiten oder kann sie einfach auch nur als Ideenspende
+nutzen. Was nicht funktionieren wird ist - kopieren und laufen lassen. Das geht mit Sicherheit schief.</p>
+</div>
+<div class="paragraph">
+<p>Auch stellen die Skripte einen aktuellen Arbeitsstand dar, sind also weder konsolidiert noch optimiert. Daher ist es
+sehr sinnvoll, vor ihrer Nutzung ihre Logik und Arbeitsweise zu verstehen.</p>
+</div>
+<div class="paragraph">
+<p>Das Logging habe ich nicht elegant gelöst bekommen - wer da Tipps hat, gern mal Bescheid geben oder einen PR stellen
+ - Danke.</p>
+</div>
+<div class="sect3">
+<h4 id="backup-stuff-in-backupfolder"><a class="anchor" href="#backup-stuff-in-backupfolder"></a>Backup Stuff in Backupfolder</h4>
+<div class="paragraph">
+<p>Erstellt einen Snapshot vom Medien oder Dokumenten Ordner.</p>
+</div>
+<div class="listingblock">
+<div class="title">backup-stuff.sh</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+set -euo pipefail
+
+# Konfiguration
+SRC="/mnt/user/ablagen/folders/ResilioSync/"
+DST="/mnt/user/backup-stuff"
+INFOFILE="${DST}/backup-info.txt"
+DATEFILE="${DST}/backup-date.txt"
+LOG_DIR="/mnt/user/logs/backup-stuff"
+LOGFILE="${LOG_DIR}/backup-stuff_$(date '+%Y%m%d_%H%M%S').log"
+LOCKFILE="/tmp/backup_stuff.lock"
+
+# Zielverzeichnis anlegen
+mkdir -p "$LOG_DIR"          # sonst scheitert: tee: ... No such file or directory
+mkdir -p "$DST"              # erstellt den kompletten Zielpfad inkl. Datum
+
+
+# Signal-Handler und Aufräumroutine
+cleanup() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✋ Backup-Skript abgebrochen durch Signal (SIGINT/SIGTERM)" | tee -a "$LOGFILE"
+    rm -f "$LOCKFILE"
+    exit 1
+}
+trap cleanup INT TERM
+
+# Lockfile prüfen und setzen
+if [[ -f "$LOCKFILE" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️  Backup läuft bereits (Lockfile gefunden: $LOCKFILE). Abbruch." | tee -a "$LOGFILE"
+    exit 2
+fi
+echo $$ &gt; "$LOCKFILE"
+
+# Bei erfolgreichem oder abgebrochenem Lauf Lockfile entfernen
+finish() {
+    rm -f "$LOCKFILE"
+}
+trap finish EXIT
+
+# Backup starten
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] === Backup gestartet ===" | tee -a "$LOGFILE"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starte rsync Backup..." | tee -a "$LOGFILE"
+rsync -a --delete --info=progress2 --no-compress \
+    --exclude='.sync/' \
+    "$SRC" "$DST"
+
+# Backup-Info schreiben
+BACKUP_TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
+echo "Backup abgeschlossen am: $BACKUP_TIMESTAMP" &gt; "$INFOFILE"
+echo "[$BACKUP_TIMESTAMP] ✅ Backup erfolgreich abgeschlossen." | tee -a "$LOGFILE"
+
+# Backup-Date schreiben
+BACKUP_DATE="$(date '+%Y-%m-%d')"
+echo "$BACKUP_DATE" &gt; "$DATEFILE"
+
+
+exit 0</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="backup-stuff-auf-hdd"><a class="anchor" href="#backup-stuff-auf-hdd"></a>Backup Stuff auf HDD</h4>
+<div class="paragraph">
+<p>Erstellt einen Snapshot vom Backup Ordner auf ein externes Laufwerk.</p>
+</div>
+<div class="listingblock">
+<div class="title">cp_backup2hdd_stuff.sh</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+set -euo pipefail
+
+# Konfiguration
+SRC="/mnt/user/backup-stuff/"
+DST="/mnt/disks/USB_STORAGE/backup/stuff"
+INFOFILE="${DST}/backup-info.txt"
+DATEFILE="${DST}/backup-date.txt"
+LOGFILE="/mnt/user/logs/hdd-backup-stuff.log"
+LOCKFILE="/tmp/backup2hdd-stuff.lock"
+
+# Zielverzeichnis anlegen
+mkdir -p "$DST"
+
+# Signal-Handler und Aufräumroutine
+cleanup() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✋ Backup-Skript abgebrochen durch Signal (SIGINT/SIGTERM)" | tee -a "$LOGFILE"
+    rm -f "$LOCKFILE"
+    exit 1
+}
+trap cleanup INT TERM
+
+# Lockfile prüfen und setzen
+if [[ -f "$LOCKFILE" ]]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️  Backup läuft bereits (Lockfile gefunden: $LOCKFILE). Abbruch." | tee -a "$LOGFILE"
+    exit 2
+fi
+echo $$ &gt; "$LOCKFILE"
+
+# Bei erfolgreichem oder abgebrochenem Lauf Lockfile entfernen
+finish() {
+    rm -f "$LOCKFILE"
+}
+trap finish EXIT
+
+# Backup starten
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] === Backup gestartet ===" | tee -a "$LOGFILE"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starte rsync Backup..." | tee -a "$LOGFILE"
+rsync -a --delete --info=progress2 --no-compress \
+    --exclude='.sync/' \
+    "$SRC" "$DST"
+
+# Backup-Info schreiben
+BACKUP_TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
+echo "Backup abgeschlossen am: $BACKUP_TIMESTAMP" &gt; "$INFOFILE"
+echo "[$BACKUP_TIMESTAMP] ✅ Backup erfolgreich abgeschlossen." | tee -a "$LOGFILE"
+
+# Backup-Date schreiben
+BACKUP_DATE="$(date '+%Y-%m-%d')"
+echo "$BACKUP_DATE" &gt; "$DATEFILE"
+
+
+exit 0</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dupliziere-archive-auf-hdd"><a class="anchor" href="#dupliziere-archive-auf-hdd"></a>Dupliziere Archive auf HDD</h4>
+<div class="paragraph">
+<p>Dupliziert einen Folder auf einer externen HDD - nur in Ausnahmefällen nutzen!</p>
+</div>
+<div class="listingblock">
+<div class="title">cp_hdd2hdd_archive.sh</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+set -Eeuo pipefail
+
+SRC="/mnt/disks/USB_STORAGE/backup/"
+DST="/mnt/disks/USB_STORAGE/archive"
+INFOFILE="${DST}/cp_backup-info.txt"
+DATEFILE="${DST}/cp_backup-date.txt"
+LOGDIR="/mnt/user/logs/cp_hdd2hdd_archive"
+LOGFILE="${LOGDIR}/cp_backup2archive.log"
+LOCKFILE="/tmp/cp_hdd2hdd_archive.lock"
+# PARTIAL_DIR="${DST}/.rsync-partial"
+
+mkdir -p "$DST" "$LOGDIR"
+
+ts() { date '+%Y-%m-%d %H:%M:%S'; }
+
+if [[ -f "$LOCKFILE" ]]; then
+  echo "[$(ts)] ⚠️  Backup läuft bereits (Lockfile gefunden). Abbruch." | tee -a "$LOGFILE"
+  exit 2
+fi
+echo $$ &gt; "$LOCKFILE"
+
+finish() { rm -f "$LOCKFILE"; }
+trap finish EXIT
+
+on_signal() {
+  echo "[$(ts)] ✋ Signal empfangen – breche ab…" | tee -a "$LOGFILE"
+  # Bei single-rsync reicht ein normales Exit; rsync beendet sich durch das Signal mit.
+  exit 1
+}
+trap on_signal INT TERM
+
+echo "[$(ts)] === Backup gestartet ===" | tee -a "$LOGFILE"
+echo "[$(ts)] Quelle: $SRC" | tee -a "$LOGFILE"
+echo "[$(ts)] Ziel:   $DST" | tee -a "$LOGFILE"
+
+# Ein einzelner rsync-Stream (schnellste Variante auf derselben Platte)
+rsync -aHAX --numeric-ids \
+  --delete --delete-delay --delay-updates \
+  --whole-file \
+  --partial \
+  --no-compress \
+  --info=progress2,stats2 --human-readable \
+  --exclude='.sync/' \
+  -- "$SRC" "$DST" | tee -a "$LOGFILE"
+
+BACKUP_TIMESTAMP="$(ts)"
+echo "Backup abgeschlossen am: $BACKUP_TIMESTAMP" &gt; "$INFOFILE"
+echo "[$(ts)] ✅ Backup erfolgreich abgeschlossen." | tee -a "$LOGFILE"
+date '+%Y-%m-%d' &gt; "$DATEFILE"
+exit 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="index.html">Zurück zur Übersicht</a></p>
+</div>
 </div>
 </div>
 </div>
@@ -597,7 +775,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="footer">
 <div id="footer-text">
 Version Ausgabe 1.0.0-SNAPSHOT<br>
-Last updated 04.02.2026
+Last updated 01.01.2026 
 </div>
 </div>
 </body>
