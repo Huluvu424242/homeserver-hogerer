@@ -530,10 +530,10 @@ Lege den Hostnamen intern fest:</p>
 <p>FritzBox → <strong>Heimnetz</strong> → <strong>Netzwerk</strong></p>
 </li>
 <li>
-<p>Deinem Unraid-Server einen Namen geben, z. B. <code>unraid.lan</code> oder <code>unraid.local</code></p>
+<p>Deinem Unraid-Server einen Namen geben, z. B. <code>vaultserver.lan</code> oder <code>vaultserver.local</code></p>
 </li>
 <li>
-<p>Falls <code>.local</code> Probleme macht, alternativ <code>.lan</code> verwenden (<code>unraid.lan</code>)</p>
+<p>Meist bereitet <code>.local</code> Probleme, daher besser <code>.lan</code> verwenden (<code>vaultserver.lan</code>)</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -593,7 +593,8 @@ In den Bitwarden-Plugin-Einstellungen:</p>
 <div class="title">Nachteile</div>
 <ul>
 <li>
-<p>Root-CA muss auf allen Geräten importiert werden (PC, Handy usw.)</p>
+<p>Root-CA (rootCA.pam) muss auf allen Geräten importiert werden (PC, Handy usw.)
+(Auf dem Rechner wo die Zertifikate erzeugt wurden ausführen von <code>mkcert -CAROOT</code> zeigt in welchem Folder die rootCA.pem liegt)</p>
 </li>
 </ul>
 </div>
