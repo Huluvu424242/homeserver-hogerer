@@ -83,9 +83,9 @@ Beispiel:
 
 | Komponente | Wert |
 |------------|------|
-| Hostname | `vaultserver.local` |
+| Hostname | `vaultserver.lan` |
 | IP-Adresse | `192.168.1.10` |
-| Vaultwarden URL | `https://vaultserver.local` |
+| Vaultwarden URL | `https://vaultserver.lan` |
 
 ---
 
@@ -127,14 +127,14 @@ Der Browser vertraut anschließend allen Zertifikaten dieser CA.
 Beispiel:
 
 ```cmd
-mkcert vaultserver.local 192.168.1.10
+mkcert vaultserver.lan 192.168.1.10
 ```
 
 Es entstehen zwei Dateien:
 
 ```text
-vaultserver.local+1.pem
-vaultserver.local+1-key.pem
+vaultserver.lan+1.pem
+vaultserver.lan+1-key.pem
 ```
 
 ---
@@ -151,8 +151,8 @@ Beispiel:
 
 ```text
 /mnt/user/appdata/vaultwarden/ssl/
-├── vaultserver.local.pem
-└── vaultserver.local-key.pem
+├── vaultserver.lan.pem
+└── vaultserver.lan-key.pem
 ```
 
 ---
@@ -162,7 +162,7 @@ Beispiel:
 In den Docker-Variablen folgende Umgebungsvariable ergänzen:
 
 ```text
-ROCKET_TLS={certs="/data/ssl/vaultserver.local.pem",key="/data/ssl/vaultserver.local-key.pem"}
+ROCKET_TLS={certs="/data/ssl/vaultserver.lan.pem",key="/data/ssl/vaultserver.lan-key.pem"}
 ```
 
 Zusätzlich sicherstellen:
@@ -212,7 +212,7 @@ Dem Unraid-Server in der FritzBox einen festen Namen geben.
 Beispiel:
 
 ```text
-vaultserver.local
+vaultserver.lan
 ```
 
 oder
@@ -224,7 +224,7 @@ vaultserver.fritz.box
 Prüfen:
 
 ```cmd
-ping vaultserver.local
+ping vaultserver.lan
 ```
 
 Sollte die korrekte IP-Adresse liefern.
@@ -236,7 +236,7 @@ Sollte die korrekte IP-Adresse liefern.
 Im Browser öffnen:
 
 ```text
-https://vaultserver.local
+https://vaultserver.lan
 ```
 
 Erwartetes Ergebnis:
@@ -255,7 +255,7 @@ In der Bitwarden/Vaultwarden-Erweiterung:
 Server URL:
 
 ```text
-https://vaultserver.local
+https://vaultserver.lan
 ```
 
 Anschließend neu anmelden.
@@ -315,7 +315,7 @@ ROCKET_TLS Pfad falsch
 Prüfen:
 
 ```text
-https://vaultserver.local
+https://vaultserver.lan
 ```
 
 muss bereits im Browser funktionieren.
