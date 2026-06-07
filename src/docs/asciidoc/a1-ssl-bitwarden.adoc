@@ -69,6 +69,7 @@ ROCKET_TLS={certs="/data/ssl/vaultwarden.lan.pem",key="/data/ssl/vaultwarden.lan
 
 .Nachteile
 * Root-CA (rootCA.pam) muss auf allen Geräten importiert werden (PC, Handy usw.)
+
 (Auf dem Rechner wo die Zertifikate erzeugt wurden ausführen von `mkcert -CAROOT` zeigt in welchem Folder die rootCA.pem liegt)
 
 ==== 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)
