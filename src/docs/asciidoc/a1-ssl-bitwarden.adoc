@@ -60,7 +60,7 @@ ROCKET_TLS={certs="/data/ssl/vaultwarden.lan.pem",key="/data/ssl/vaultwarden.lan
   In den Bitwarden-Plugin-Einstellungen:
 
   * „Selbstsigniertes Zertifikat zulassen“
-  * URL setzen auf `https://vaultwarden.lan`
+  * URL setzen auf `https://vaultwarden-lan`  (FritzBox Eigenheit sonst https://vaultwarden.lan)
 
 .Vorteile
 * Funktioniert offline, ohne Cloud
