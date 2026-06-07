@@ -41,8 +41,8 @@ mkcert vaultwarden.lan vaultwarden-lan 192.168.178.50
   Lege den Hostnamen intern fest:
 
   * FritzBox → *Heimnetz* → *Netzwerk*
-  * Deinem Unraid-Server einen Namen geben, z. B. `unraid.lan` oder `unraid.local`
-  * Falls `.local` Probleme macht, alternativ `.lan` verwenden (`unraid.lan`)
+  * Deinem Unraid-Server einen Namen geben, z. B. `vaultserver.lan` oder `vaultserver.local`
+  * Meist bereitet `.local` Probleme, daher besser `.lan` verwenden (`vaultserver.lan`)
 
 . Vaultwarden-Container mit Zertifikaten starten
   Im Unraid-Docker-Template:
@@ -68,7 +68,8 @@ ROCKET_TLS={certs="/data/ssl/vaultwarden.lan.pem",key="/data/ssl/vaultwarden.lan
 * Sicherheit wie bei professionellen internen Installationen
 
 .Nachteile
-* Root-CA muss auf allen Geräten importiert werden (PC, Handy usw.)
+* Root-CA (rootCA.pam) muss auf allen Geräten importiert werden (PC, Handy usw.)
+(Auf dem Rechner wo die Zertifikate erzeugt wurden ausführen von `mkcert -CAROOT` zeigt in welchem Folder die rootCA.pem liegt)
 
 ==== 2. Lokale DNS-Domain + Reverse Proxy + Let’s Encrypt (DNS-Challenge)
 
