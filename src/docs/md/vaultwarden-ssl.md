@@ -85,7 +85,7 @@ Beispiel:
 |------------|------|
 | Hostname | `vaultserver.lan` |
 | IP-Adresse | `192.168.1.10` |
-| Vaultwarden URL | `https://vaultserver.lan` |
+| Vaultwarden URL | `https://vaultserver-lan` |
 
 ---
 
