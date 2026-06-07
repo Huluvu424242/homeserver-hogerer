@@ -28,7 +28,7 @@ _(die sicherste und sauberste Lösung im Heimnetz)_
 [source,shell]
 ----
 mkcert -install
-mkcert vaultwarden.lan 192.168.178.50
+mkcert vaultwarden.lan vaultwarden-lan 192.168.178.50
 ----
 
   ➜ erzeugt:
