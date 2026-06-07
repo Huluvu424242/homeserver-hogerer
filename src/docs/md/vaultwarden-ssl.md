@@ -127,7 +127,7 @@ Der Browser vertraut anschließend allen Zertifikaten dieser CA.
 Beispiel:
 
 ```cmd
-mkcert vaultserver.lan 192.168.1.10
+mkcert vaultserver.lan vaultserver-lan 192.168.1.10
 ```
 
 Es entstehen zwei Dateien:
