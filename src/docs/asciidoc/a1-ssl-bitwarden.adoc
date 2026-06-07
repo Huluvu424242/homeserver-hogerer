@@ -35,7 +35,7 @@ mkcert vaultwarden.lan vaultwarden-lan 192.168.178.50
 
   * Zertifikat: `vaultwarden.lan.pem`
   * Key: `vaultwarden.lan-key.pem`
-  * Root-CA im Betriebssystem installiert
+  * Root-CA im Betriebssystem installiert (durch mkcert install)
 
 . FritzBox DNS-Rebind anpassen
   Lege den Hostnamen intern fest:
@@ -50,11 +50,11 @@ mkcert vaultwarden.lan vaultwarden-lan 192.168.178.50
 [source]
 ----
 WEB_VAULT_ENABLED=true
-ROCKET_TLS={certs="/data/vaultwarden.lan.pem",key="/data/vaultwarden.lan-key.pem"}
+ROCKET_TLS={certs="/data/ssl/vaultwarden.lan.pem",key="/data/ssl/vaultwarden.lan-key.pem"}
 ----
 
   Die Zertifikate vorher nach
-  `/mnt/user/appdata/vaultwarden/` kopieren.
+  `/mnt/user/appdata/vaultwarden/ssl` kopieren.
 
 . Im Browser-Plugin Hintergrund-Domain ändern
   In den Bitwarden-Plugin-Einstellungen:
