@@ -41,8 +41,8 @@ mkcert vaultwarden.lan 192.168.178.50
   Lege den Hostnamen intern fest:
 
   * FritzBox → *Heimnetz* → *Netzwerk*
-  * Deinem Unraid-Server einen Namen geben, z. B. `unraid.lan`
-  * Falls `.lan` Probleme macht, alternativ `.lan` verwenden (`unraid.lan`)
+  * Deinem Unraid-Server einen Namen geben, z. B. `unraid.lan` oder `unraid.local`
+  * Falls `.local` Probleme macht, alternativ `.lan` verwenden (`unraid.lan`)
 
 . Vaultwarden-Container mit Zertifikaten starten
   Im Unraid-Docker-Template:
