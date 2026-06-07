@@ -1200,7 +1200,7 @@ mkcert vaultwarden.lan vaultwarden-lan 192.168.178.50</code></pre>
 <p>Key: <code>vaultwarden.lan-key.pem</code></p>
 </li>
 <li>
-<p>Root-CA im Betriebssystem installiert</p>
+<p>Root-CA im Betriebssystem installiert (durch mkcert install)</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1232,13 +1232,13 @@ Im Unraid-Docker-Template:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>WEB_VAULT_ENABLED=true
-ROCKET_TLS={certs="/data/vaultwarden.lan.pem",key="/data/vaultwarden.lan-key.pem"}</code></pre>
+ROCKET_TLS={certs="/data/ssl/vaultwarden.lan.pem",key="/data/ssl/vaultwarden.lan-key.pem"}</code></pre>
 </div>
 </div>
 <div class="literalblock">
 <div class="content">
 <pre>Die Zertifikate vorher nach
-`/mnt/user/appdata/vaultwarden/` kopieren.</pre>
+`/mnt/user/appdata/vaultwarden/ssl` kopieren.</pre>
 </div>
 </div>
 <div class="olist arabic">
